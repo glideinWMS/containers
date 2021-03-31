@@ -7,10 +7,9 @@ LABEL maintainer OSG Software <help@opensciencegrid.org>
 RUN groupadd -o -g 993 frontend
 RUN useradd -o -u 996 -g 993 -s /bin/sh frontend
 
-# ddavila 20201125:
-# temporarily installing from osg-upcoming to get 3.7, this needs to be changed
-# once we can get 3.7 out of osg-release
-RUN yum -y --enablerepo=osg-upcoming-testing install glideinwms-vofrontend-standalone
+# ddavila 20210331:
+# 3.9.1 is only available in develpment at the moment
+RUN yum -y --enablerepo=osg-development install glideinwms-vofrontend-standalone
 
 RUN yum -y install vo-client \
     git
