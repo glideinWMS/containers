@@ -1,4 +1,4 @@
-FROM opensciencegrid/software-base:fresh
+FROM opensciencegrid/software-base:3.5-el7-release-20210726-1346
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
 # Create the frontend user with a fixed GID/UID
