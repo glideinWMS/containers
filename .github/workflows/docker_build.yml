@@ -33,4 +33,4 @@ jobs:
         push: true
         context: frontend
         file: frontend/Dockerfile
-        tags: glideinwms/gwms-frontend:3.9.3-1.osg36.el7-dev-${{ steps.mkdatetag.outputs.dtag }}
+        tags: glideinwms/gwms-frontend:3.9.3-1.osg35.el7-dev-${{ steps.mkdatetag.outputs.dtag }}
