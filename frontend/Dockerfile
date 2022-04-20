@@ -1,4 +1,4 @@
-FROM opensciencegrid/software-base:3.5-el7-release-20220210-2031
+FROM opensciencegrid/software-base:3.5-el7-release-20220417-0734
 LABEL maintainer OSG Software <help@opensciencegrid.org>
 
 # Create the frontend user with a fixed GID/UID
@@ -9,6 +9,7 @@ RUN useradd -o -u 996 -g 993 -s /bin/sh frontend
 
 RUN yum clean all && \
     yum -y --enablerepo=osg-development install \
+      patch \
       git \
       condor \
       condor-classads \
