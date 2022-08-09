@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vo-frontend-service
+spec:
+  selector:
+    app: vo-frontend
+  type: ClusterIP
+  ipFamilyPolicy: RequireDualStack
+  ipFamilies:
+  - IPv6
+  - IPv4
+  ports:
+  - name: web
+    port: 80
+    targetPort: 80
+    protocol: TCP
+  externalIPs:
+  - {{ .Values.hostIPv4 }}
+  - {{ .Values.hostIPv6 }}
+

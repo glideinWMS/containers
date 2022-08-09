@@ -1,0 +1,9 @@
+{{- $globpath := printf "%s/*.*" .Values.frontendConfigMountRoot -}}
+{{- $cronpath := printf "%s/renew_scitoken" .Values.frontendConfigMountRoot -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vo-frontend-config
+data:
+{{ (.Files.Glob $globpath).AsConfig | indent 2 }}
+{{ (.Files.Glob $cronpath).AsConfig | indent 2 }}

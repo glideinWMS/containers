@@ -1,0 +1,11 @@
+# MYSELF
+GSI "" condor
+
+# FE
+GSI "" frontend
+
+# Pilot
+GSI "" pilot
+
+# SCHEDDS
+GSI "" schedd

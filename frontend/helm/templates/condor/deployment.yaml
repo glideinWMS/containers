@@ -1,0 +1,136 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: htcondor-cm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: htcondor-cm
+  strategy:
+    type: Recreate    
+  template:
+    metadata:
+      labels:
+        app: htcondor-cm
+    spec:
+      restartPolicy: Always
+      initContainers:
+      - name: init-htcondor
+        image: ddavila0/htcondor-cm-8.9.11-el7:20210427-0521
+        volumeMounts:
+        - mountPath: /var/lib/condor/spool
+          name: condor-spool
+        - mountPath: /etc/condor/config.d/99-site.config
+          name: condor-config
+          subPath: 99-site.config
+        - mountPath: /etc/condor/passwords.d/
+          name: condor-passwd
+        - mountPath: /etc/condor/tokens.d/
+          name: condor-tokens
+        - mountPath: /root/frontend-tokens.d/
+          name: frontend-tokens
+        env:
+        - name: SERVICE_FQDN
+          value: {{ .Values.hostHostname }}
+        command: ["sh", "-c"]
+        args: ["chown -R 64:64 /var/lib/condor/spool;
+
+                if [[ ! -s /etc/condor/passwords.d/POOL ]]; then
+                  ( flock -n 200 || exit 0;
+                    echo POOL is empty;
+                    condor_store_cred add -c -p `/etc/condor/passwords.d/passgen.py`;
+                    chmod 600 /etc/condor/passwords.d/POOL;
+                    condor_token_create -id condor@{{ .Values.hostHostname }} -token condor.idtoken;
+                    condor_token_create -id frontend@{{ .Values.hostHostname }} > /root/frontend-tokens.d/frontend.{{ .Values.hostHostname }}.idtoken;
+                    chown frontend.frontend /root/frontend-tokens.d/*;
+                  ) 200>/etc/condor/passwords.d/POOL;
+                else
+                  echo POOL is not empty;
+                fi;
+                
+                until [[ -s /root/frontend-tokens.d/frontend.{{ .Values.hostHostname }}.idtoken ]]; do
+                  sleep 1;
+                done;"]
+      containers:
+      - name: htcondor-cm
+        image: ddavila0/htcondor-cm-8.9.11-el7:20210427-0521
+        ports:
+        - containerPort: 9618 
+        - containerPort: 51450
+        - containerPort: 41450
+        volumeMounts:
+        - mountPath: /var/lib/condor/spool
+          name: condor-spool
+        - mountPath: /etc/grid-security/condor-le
+          name: central-manager-le-cert
+          readOnly: true
+        - mountPath: /etc/grid-security/condor-igtf
+          name: central-manager-igtf-cert
+          readOnly: true
+        - mountPath: /etc/condor/config.d/99-site.config
+          name: condor-config
+          subPath: 99-site.config
+        - mountPath: /etc/condor/condor-mapfile
+          name: condor-mapfile
+          subPath: condor-mapfile
+          readOnly: true
+        - mountPath: /usr/local/etc
+          name: influxdb-htcondor
+        - mountPath: /etc/condor/passwords.d/
+          name: condor-passwd
+        - mountPath: /etc/condor/tokens.d/
+          name: condor-tokens
+        resources:
+          limits:
+            cpu: 1
+            memory: 2Gi
+          requests:
+            cpu: 350m
+            memory: 1Gi
+        env:
+        - name: SERVICE_FQDN
+          value: {{ .Values.hostHostname }}
+      volumes:
+        - name: condor-spool
+          persistentVolumeClaim:
+            claimName: htcondor-cm-pvc
+        - name: central-manager-le-cert
+          secret:
+            secretName: htcondor-cm-le-cert
+            defaultMode: 0600
+            optional: true
+        - name: central-manager-igtf-cert
+          secret:
+            secretName: htcondor-cm-igtf-cert
+            defaultMode: 0600
+            optional: true
+        - name: condor-config
+          configMap:
+            defaultMode: 0644
+            items:
+            - key: 99-site.config
+              path: 99-site.config
+            name: htcondor-cm-config
+        - name : condor-mapfile
+          configMap:
+             defaultMode: 0644
+             items:
+             - key: condor-mapfile
+               path: condor-mapfile
+             optional: true
+             name: htcondor-cm-config
+        - name: influxdb-htcondor
+          secret:
+            secretName: htcondor-cm-influxdb-htcondor
+            defaultMode: 0644
+            optional: true
+        - name: condor-passwd
+          persistentVolumeClaim:
+            claimName: condor-passwd-pvc
+        - name: condor-tokens
+          persistentVolumeClaim:
+            claimName: condor-tokens-pvc
+        - name: frontend-tokens
+          persistentVolumeClaim:
+            claimName: frontend-tokens-pvc
