@@ -30,28 +30,14 @@ spec:
           name: condor-tokens
         - mountPath: /root/frontend-tokens.d/
           name: frontend-tokens
+        - mountPath: /root/setup-creds.sh
+          subPath: setup-creds.sh
+          name: setup-creds
         env:
         - name: SERVICE_FQDN
           value: {{ .Values.hostHostname }}
         command: ["sh", "-c"]
-        args: ["chown -R 64:64 /var/lib/condor/spool;
-
-                if [[ ! -s /etc/condor/passwords.d/POOL ]]; then
-                  ( flock -n 200 || exit 0;
-                    echo POOL is empty;
-                    condor_store_cred add -c -p `/etc/condor/passwords.d/passgen.py`;
-                    chmod 600 /etc/condor/passwords.d/POOL;
-                    condor_token_create -id condor@{{ .Values.hostHostname }} -token condor.idtoken;
-                    condor_token_create -id frontend@{{ .Values.hostHostname }} > /root/frontend-tokens.d/frontend.{{ .Values.hostHostname }}.idtoken;
-                    chown frontend.frontend /root/frontend-tokens.d/*;
-                  ) 200>/etc/condor/passwords.d/POOL;
-                else
-                  echo POOL is not empty;
-                fi;
-                
-                until [[ -s /root/frontend-tokens.d/frontend.{{ .Values.hostHostname }}.idtoken ]]; do
-                  sleep 1;
-                done;"]
+        args: ["chown -R 64:64 /var/lib/condor/spool; /root/setup-creds.sh;"]
       containers:
       - name: htcondor-cm
         image: ddavila0/htcondor-cm-8.9.11-el7:20210427-0521
@@ -114,12 +100,19 @@ spec:
             name: htcondor-cm-config
         - name : condor-mapfile
           configMap:
-             defaultMode: 0644
-             items:
-             - key: condor-mapfile
-               path: condor-mapfile
-             optional: true
-             name: htcondor-cm-config
+            defaultMode: 0644
+            items:
+            - key: condor-mapfile
+              path: condor-mapfile
+            optional: true
+            name: htcondor-cm-config
+        - name: setup-creds
+          configMap:
+            defaultMode: 0755
+            items:
+            - key: setup-creds.sh
+              path: setup-creds.sh
+            name: htcondor-cm-config
         - name: influxdb-htcondor
           secret:
             secretName: htcondor-cm-influxdb-htcondor

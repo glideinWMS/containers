@@ -29,28 +29,14 @@ spec:
           name: condor-passwd
         - mountPath: /root/output-tokens
           name: output-tokens
+        - mountPath: /root/setup-creds.sh
+          subPath: setup-creds.sh
+          name: setup-creds
         env:
         - name: VO_POOL
           value: {{ .Values.hostHostname }}
         command: ["sh", "-c"]
-        args: ["chown -R 996:993 /var/lib/gwms-frontend/web-area;
-
-                if [[ ! -s /etc/condor/passwords.d/FRONTEND ]]; then
-                  ( flock -n 200 || exit 0;
-                    echo FRONTEND is empty;
-                    condor_store_cred add -f /etc/condor/passwords.d/FRONTEND -p `/etc/condor/passwords.d/passgen.py`;
-                    chmod 600 /etc/condor/passwords.d/FRONTEND;
-                    cp /etc/condor/passwords.d/FRONTEND /root/condor-passwords.d;
-                    condor_token_create -id factory@{{ .Values.hostHostname }} -key FRONTEND > /root/output-tokens/factory.{{ .Values.hostHostname }}.idtoken;
-                    chown frontend.frontend /etc/condor/tokens.d/* /etc/condor/passwords.d/*;
-                  ) 200>/etc/condor/passwords.d/FRONTEND;
-                else
-                  echo FRONTEND is not empty;
-                fi;
-                
-                until [[ -s /etc/condor/passwords.d/FRONTEND ]]; do
-                  sleep 1;
-                done;"]
+        args: ["chown -R 996:993 /var/lib/gwms-frontend/web-area; /root/setup-creds.sh"]
       containers:
       - name: vo-frontend
         image: localhost:5000/frontend:396-osg36
@@ -136,6 +122,13 @@ spec:
             items:
             - key: proxies.ini
               path: proxies.ini
+            name: vo-frontend-config
+        - name: setup-creds
+          configMap:
+            defaultMode: 0755
+            items:
+            - key: setup-creds.sh
+              path: setup-creds.sh
             name: vo-frontend-config
         - name: renew-scitoken-cron
           configMap:
