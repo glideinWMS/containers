@@ -63,10 +63,6 @@ condorCredsMountRoot: /root/gwms-helm/persistent-mount/condor
 # Tokens from external hosts such as a GlideinWMS Factory should be placed here in the tokens.d sub-directory.
 frontendCredsMountRoot: /root/gwms-helm/persistent-mount/frontend
 
-# outputTokensMount is the absolute path to the directory where tokens for external hosts such
-# as a GlideinWMS Factory will be automatically generated for convenient access.
-outputTokensMount: /root/gwms-helm/persistent-mount/output-tokens
-
 # scitokenComplaintMount is the absolute path to the directory where the GlideinWMS VO-Frontend will automatically generate
 # a scitoken-complaint.log file. Failure to automatically renew scitokens will write warnings and further instructions to this file.
 scitokenComplaintMount: /root/gwms-helm/persistent-mount/frontend/scitoken-complaint

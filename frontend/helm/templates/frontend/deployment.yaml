@@ -27,8 +27,6 @@ spec:
           name: frontend-tokens
         - mountPath: /root/condor-passwords.d
           name: condor-passwd
-        - mountPath: /root/output-tokens
-          name: output-tokens
         - mountPath: /root/setup-creds.sh
           subPath: setup-creds.sh
           name: setup-creds
@@ -156,6 +154,3 @@ spec:
         - name: condor-passwd
           persistentVolumeClaim:
             claimName: condor-passwd-pvc
-        - name: output-tokens
-          persistentVolumeClaim:
-            claimName: output-tokens-pvc
