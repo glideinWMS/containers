@@ -6,26 +6,37 @@ metadata:
     app: htcondor-cm
 spec:
   type: ClusterIP
+  {{- if and .Values.hostIPv4 .Values.hostIPv6 }}
   ipFamilyPolicy: RequireDualStack
+  {{- else }}
+  ipFamilyPolicy: SingleStack
+  {{- end }}
   ipFamilies:
+  {{- if .Values.hostIPv4 }}
   - IPv6
+  {{- end }}
+  {{- if .Values.hostIPv6 }}
   - IPv4
+  {{- end }}
   ports:
-    - port: 9618
-      protocol: TCP
-      targetPort: 9618
-      name: htcondor
-    - port: 51450
-      protocol: TCP
-      targetPort: 51450
-      name: htcondor-ha
-    - port: 41450
-      protocol: TCP
-      targetPort: 41450
-      name: htcondor-replication
+  - port: 9618
+    protocol: TCP
+    targetPort: 9618
+    name: htcondor
+  - port: 51450
+    protocol: TCP
+    targetPort: 51450
+    name: htcondor-ha
+  - port: 41450
+    protocol: TCP
+    targetPort: 41450
+    name: htcondor-replication
   selector:
     app: htcondor-cm
   externalIPs:
+  {{- if .Values.hostIPv4 }}
   - {{ .Values.hostIPv4 }}
+  {{- end }}
+  {{- if .Values.hostIPv6 }}
   - {{ .Values.hostIPv6 }}
-
+  {{- end }}
