@@ -1,3 +1,4 @@
+# include everything in the frontend config directory except for certs in the configmap
 {{- $globpath := printf "%s/*.*" .Values.frontendConfigMountRoot -}}
 {{- $cronpath := printf "%s/renew_scitoken" .Values.frontendConfigMountRoot -}}
 apiVersion: v1

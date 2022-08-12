@@ -17,13 +17,13 @@ spec:
       restartPolicy: Always
       initContainers:
       - name: init-frontend
-        image: localhost:5000/frontend:396-osg36
+        image: ahimley/gwms-frontend:3.9.6.osg36.el7-20220812
         volumeMounts:
         - mountPath: /var/lib/gwms-frontend/web-area
           name: web-storage
-        - mountPath: /etc/condor/passwords.d
+        - mountPath: /var/lib/gwms-frontend/passwords.d
           name: frontend-passwd
-        - mountPath: /etc/condor/tokens.d
+        - mountPath: /var/lib/gwms-frontend/.condor/tokens.d
           name: frontend-tokens
         - mountPath: /root/condor-passwords.d
           name: condor-passwd
@@ -37,8 +37,7 @@ spec:
         args: ["chown -R 996:993 /var/lib/gwms-frontend/web-area; /root/setup-creds.sh"]
       containers:
       - name: vo-frontend
-        image: localhost:5000/frontend:396-osg36
-        imagePullPolicy: Always
+        image: ahimley/gwms-frontend:3.9.6.osg36.el7-20220812
         ports:
         - containerPort: 80 
         volumeMounts:
@@ -50,6 +49,9 @@ spec:
         - mountPath: /etc/grid-security/gwms-pilot-certs
           name: pilotcerts-secret
           readOnly: true
+        - mountPath: /etc/gwms-frontend/frontend.xml.base
+          subPath: frontend.xml.base
+          name: fexml-config
         - mountPath: /etc/gwms-frontend/proxies.ini
           subPath: proxies.ini
           name: proxies-config
@@ -61,15 +63,8 @@ spec:
           name: renew-scitoken-script
         - mountPath: /var/log/gwms-frontend/scitoken-complaint
           name: scitoken-complaint
-        - mountPath: /etc/gwms-frontend/frontend.xml.base
-          subPath: frontend.xml.base
-          name: fexml-config
-        - mountPath: /etc/condor/passwords.d/
-          name: frontend-passwd
         - mountPath: /var/lib/gwms-frontend/passwords.d
           name: frontend-passwd
-        - mountPath: /etc/condor/tokens.d/
-          name: frontend-tokens
         - mountPath: /var/lib/gwms-frontend/.condor/tokens.d/
           name: frontend-tokens
         resources:
@@ -102,6 +97,7 @@ spec:
           secret:
             secretName: certs-vo-frontend
             defaultMode: 0600
+            optional: true
         - name:  pilotcerts-secret
           secret:
             secretName: pilotcerts-vo-frontend
@@ -109,39 +105,39 @@ spec:
             optional: true
         - name: fexml-config
           configMap:
+            name: vo-frontend-config
             defaultMode: 0644
             items:
             - key: frontend.xml
               path: frontend.xml.base
-            name: vo-frontend-config
         - name: proxies-config
           configMap:
+            name: vo-frontend-config
             defaultMode: 0644
             items:
             - key: proxies.ini
               path: proxies.ini
-            name: vo-frontend-config
         - name: setup-creds
           configMap:
+            name: vo-frontend-config
             defaultMode: 0755
             items:
             - key: setup-creds.sh
               path: setup-creds.sh
-            name: vo-frontend-config
         - name: renew-scitoken-cron
           configMap:
+            name: vo-frontend-config
             defaultMode: 0644
             items:
             - key: renew_scitoken
               path: renew_scitoken
-            name: vo-frontend-config
         - name: renew-scitoken-script
           configMap:
+            name: vo-frontend-config
             defaultMode: 0755
             items:
             - key: renew_scitoken.sh
               path: renew_scitoken.sh
-            name: vo-frontend-config
         - name: scitoken-complaint
           persistentVolumeClaim:
             claimName: scitoken-complaint-pvc

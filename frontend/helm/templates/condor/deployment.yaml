@@ -48,12 +48,6 @@ spec:
         volumeMounts:
         - mountPath: /var/lib/condor/spool
           name: condor-spool
-        - mountPath: /etc/grid-security/condor-le
-          name: central-manager-le-cert
-          readOnly: true
-        - mountPath: /etc/grid-security/condor-igtf
-          name: central-manager-igtf-cert
-          readOnly: true
         - mountPath: /etc/condor/config.d/99-site.config
           name: condor-config
           subPath: 99-site.config
@@ -61,8 +55,6 @@ spec:
           name: condor-mapfile
           subPath: condor-mapfile
           readOnly: true
-        - mountPath: /usr/local/etc
-          name: influxdb-htcondor
         - mountPath: /etc/condor/passwords.d/
           name: condor-passwd
         - mountPath: /etc/condor/tokens.d/
@@ -81,43 +73,28 @@ spec:
         - name: condor-spool
           persistentVolumeClaim:
             claimName: htcondor-cm-pvc
-        - name: central-manager-le-cert
-          secret:
-            secretName: htcondor-cm-le-cert
-            defaultMode: 0600
-            optional: true
-        - name: central-manager-igtf-cert
-          secret:
-            secretName: htcondor-cm-igtf-cert
-            defaultMode: 0600
-            optional: true
         - name: condor-config
           configMap:
+            name: htcondor-cm-config
             defaultMode: 0644
             items:
             - key: 99-site.config
               path: 99-site.config
-            name: htcondor-cm-config
         - name : condor-mapfile
           configMap:
+            name: htcondor-cm-config
             defaultMode: 0644
             items:
             - key: condor-mapfile
               path: condor-mapfile
             optional: true
-            name: htcondor-cm-config
         - name: setup-creds
           configMap:
+            name: htcondor-cm-config
             defaultMode: 0755
             items:
             - key: setup-creds.sh
               path: setup-creds.sh
-            name: htcondor-cm-config
-        - name: influxdb-htcondor
-          secret:
-            secretName: htcondor-cm-influxdb-htcondor
-            defaultMode: 0644
-            optional: true
         - name: condor-passwd
           persistentVolumeClaim:
             claimName: condor-passwd-pvc
