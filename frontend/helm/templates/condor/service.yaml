@@ -13,10 +13,10 @@ spec:
   {{- end }}
   ipFamilies:
   {{- if .Values.hostIPv4 }}
-  - IPv6
+  - IPv4
   {{- end }}
   {{- if .Values.hostIPv6 }}
-  - IPv4
+  - IPv6
   {{- end }}
   ports:
   - port: 9618
