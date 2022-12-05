@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: vo-frontend-pv
+spec:
+  storageClassName: local-storage
+  local:
+    path: {{ .Values.frontendWebStorageMount }}
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - {{ .Values.hostHostname }}
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vo-frontend-pvc
+spec:
+  storageClassName: local-storage
+  volumeName: vo-frontend-pv
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: scitoken-complaint-pv
+spec:
+  storageClassName: local-storage
+  local:
+    path: {{ .Values.scitokenComplaintMount }}
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - {{ .Values.hostHostname }}
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteOnce
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: scitoken-complaint-pvc
+spec:
+  storageClassName: local-storage
+  volumeName: scitoken-complaint-pv
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Mi

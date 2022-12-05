@@ -1,0 +1,152 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vo-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vo-frontend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: vo-frontend
+    spec:
+      restartPolicy: Always
+      initContainers:
+      - name: init-frontend
+        image: ahimley/gwms-frontend:3.9.6.osg36.el7-20220812
+        volumeMounts:
+        - mountPath: /var/lib/gwms-frontend/web-area
+          name: web-storage
+        - mountPath: /var/lib/gwms-frontend/passwords.d
+          name: frontend-passwd
+        - mountPath: /var/lib/gwms-frontend/.condor/tokens.d
+          name: frontend-tokens
+        - mountPath: /root/condor-passwords.d
+          name: condor-passwd
+        - mountPath: /root/setup-creds.sh
+          subPath: setup-creds.sh
+          name: setup-creds
+        env:
+        - name: VO_POOL
+          value: {{ .Values.hostHostname }}
+        command: ["sh", "-c"]
+        args: ["chown -R 996:993 /var/lib/gwms-frontend/web-area; /root/setup-creds.sh"]
+      containers:
+      - name: vo-frontend
+        image: ahimley/gwms-frontend:3.9.6.osg36.el7-20220812
+        ports:
+        - containerPort: 80 
+        volumeMounts:
+        - mountPath: /var/lib/gwms-frontend/web-area
+          name: web-storage
+        - mountPath: /etc/grid-security/gwms-frontend-certs
+          name: frontendcerts-secret
+          readOnly: true
+        - mountPath: /etc/grid-security/gwms-pilot-certs
+          name: pilotcerts-secret
+          readOnly: true
+        - mountPath: /etc/gwms-frontend/frontend.xml.base
+          subPath: frontend.xml.base
+          name: fexml-config
+        - mountPath: /etc/gwms-frontend/proxies.ini
+          subPath: proxies.ini
+          name: proxies-config
+        - mountPath: /etc/cron.d/renew_scitoken
+          subPath: renew_scitoken
+          name: renew-scitoken-cron
+        - mountPath: /usr/libexec/gwms_renew_scitoken.sh
+          subPath: renew_scitoken.sh
+          name: renew-scitoken-script
+        - mountPath: /var/log/gwms-frontend/scitoken-complaint
+          name: scitoken-complaint
+        - mountPath: /var/lib/gwms-frontend/passwords.d
+          name: frontend-passwd
+        - mountPath: /var/lib/gwms-frontend/.condor/tokens.d/
+          name: frontend-tokens
+        resources:
+          limits:
+            cpu: 1
+            memory: 2Gi
+          requests:
+            cpu: 350m
+            memory: 1Gi
+        env:
+        - name: VO_POOL
+          value: {{ .Values.hostHostname }}
+        - name: OIDC_TOKEN_ISSUER
+          value: {{ .Values.oidcTokenIssuer }}
+        - name: VAULT_SERVER
+          value: {{ .Values.vaultServer }}
+        # give cron access to some environment variables for easier configuration
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/sh", "-c", "echo \"VO_POOL=$VO_POOL\n
+                                                OIDC_TOKEN_ISSUER=$OIDC_TOKEN_ISSUER\n
+                                                VAULT_SERVER=$VAULT_SERVER\"
+                                                >> /etc/environment"]
+      volumes:
+        - name: web-storage
+          persistentVolumeClaim:
+            claimName: vo-frontend-pvc
+        - name: frontendcerts-secret
+          secret:
+            secretName: certs-vo-frontend
+            defaultMode: 0600
+            optional: true
+        - name:  pilotcerts-secret
+          secret:
+            secretName: pilotcerts-vo-frontend
+            defaultMode: 0600
+            optional: true
+        - name: fexml-config
+          configMap:
+            name: vo-frontend-config
+            defaultMode: 0644
+            items:
+            - key: frontend.xml
+              path: frontend.xml.base
+        - name: proxies-config
+          configMap:
+            name: vo-frontend-config
+            defaultMode: 0644
+            items:
+            - key: proxies.ini
+              path: proxies.ini
+        - name: setup-creds
+          configMap:
+            name: vo-frontend-config
+            defaultMode: 0755
+            items:
+            - key: setup-creds.sh
+              path: setup-creds.sh
+        - name: renew-scitoken-cron
+          configMap:
+            name: vo-frontend-config
+            defaultMode: 0644
+            items:
+            - key: renew_scitoken
+              path: renew_scitoken
+        - name: renew-scitoken-script
+          configMap:
+            name: vo-frontend-config
+            defaultMode: 0755
+            items:
+            - key: renew_scitoken.sh
+              path: renew_scitoken.sh
+        - name: scitoken-complaint
+          persistentVolumeClaim:
+            claimName: scitoken-complaint-pvc
+        - name: frontend-passwd
+          persistentVolumeClaim:
+            claimName: frontend-passwd-pvc
+        - name: frontend-tokens
+          persistentVolumeClaim:
+            claimName: frontend-tokens-pvc
+        - name: condor-passwd
+          persistentVolumeClaim:
+            claimName: condor-passwd-pvc
