@@ -1,1 +1,0 @@
-20 * * * * root /bin/sh /usr/libexec/gwms_renew_scitoken.sh

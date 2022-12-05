@@ -1,8 +1,0 @@
-# include everything in the condor config directory in the configmap
-{{- $globpath := printf "%s/*" .Values.condorConfigMountRoot -}}
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: htcondor-cm-config
-data:
-{{ (.Files.Glob $globpath).AsConfig | indent 2 }}

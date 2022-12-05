@@ -1,7 +1,0 @@
-config/frontend/certs/*/*
-persistent-mount/*/passwords.d/*
-!persistent-mount/*/passwords.d/passgen.py
-persistent-mount/*/tokens.d/*
-persistent-mount/condor/spool/*
-persistent-mount/frontend/web-storage/*
-!.gitkeep
