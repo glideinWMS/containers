@@ -1,0 +1,106 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: htcondor-cm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: htcondor-cm
+  strategy:
+    type: Recreate    
+  template:
+    metadata:
+      labels:
+        app: htcondor-cm
+    spec:
+      restartPolicy: Always
+      initContainers:
+      - name: init-htcondor
+        image: ddavila0/htcondor-cm-8.9.11-el7:20210427-0521
+        volumeMounts:
+        - mountPath: /var/lib/condor/spool
+          name: condor-spool
+        - mountPath: /etc/condor/config.d/99-site.config
+          name: condor-config
+          subPath: 99-site.config
+        - mountPath: /etc/condor/passwords.d/
+          name: condor-passwd
+        - mountPath: /etc/condor/tokens.d/
+          name: condor-tokens
+        - mountPath: /root/frontend-tokens.d/
+          name: frontend-tokens
+        - mountPath: /root/setup-creds.sh
+          subPath: setup-creds.sh
+          name: setup-creds
+        env:
+        - name: SERVICE_FQDN
+          value: {{ .Values.hostHostname }}
+        command: ["sh", "-c"]
+        args: ["chown -R 64:64 /var/lib/condor/spool; /root/setup-creds.sh;"]
+      containers:
+      - name: htcondor-cm
+        image: ddavila0/htcondor-cm-8.9.11-el7:20210427-0521
+        ports:
+        - containerPort: 9618 
+        - containerPort: 51450
+        - containerPort: 41450
+        volumeMounts:
+        - mountPath: /var/lib/condor/spool
+          name: condor-spool
+        - mountPath: /etc/condor/config.d/99-site.config
+          name: condor-config
+          subPath: 99-site.config
+        - mountPath: /etc/condor/condor-mapfile
+          name: condor-mapfile
+          subPath: condor-mapfile
+          readOnly: true
+        - mountPath: /etc/condor/passwords.d/
+          name: condor-passwd
+        - mountPath: /etc/condor/tokens.d/
+          name: condor-tokens
+        resources:
+          limits:
+            cpu: 1
+            memory: 2Gi
+          requests:
+            cpu: 350m
+            memory: 1Gi
+        env:
+        - name: SERVICE_FQDN
+          value: {{ .Values.hostHostname }}
+      volumes:
+        - name: condor-spool
+          persistentVolumeClaim:
+            claimName: htcondor-cm-pvc
+        - name: condor-config
+          configMap:
+            name: htcondor-cm-config
+            defaultMode: 0644
+            items:
+            - key: 99-site.config
+              path: 99-site.config
+        - name : condor-mapfile
+          configMap:
+            name: htcondor-cm-config
+            defaultMode: 0644
+            items:
+            - key: condor-mapfile
+              path: condor-mapfile
+            optional: true
+        - name: setup-creds
+          configMap:
+            name: htcondor-cm-config
+            defaultMode: 0755
+            items:
+            - key: setup-creds.sh
+              path: setup-creds.sh
+        - name: condor-passwd
+          persistentVolumeClaim:
+            claimName: condor-passwd-pvc
+        - name: condor-tokens
+          persistentVolumeClaim:
+            claimName: condor-tokens-pvc
+        - name: frontend-tokens
+          persistentVolumeClaim:
+            claimName: frontend-tokens-pvc

@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: htcondor-cm-service
+  labels:
+    app: htcondor-cm
+spec:
+  type: ClusterIP
+  {{- if and .Values.hostIPv4 .Values.hostIPv6 }}
+  ipFamilyPolicy: RequireDualStack
+  {{- else }}
+  ipFamilyPolicy: SingleStack
+  {{- end }}
+  ipFamilies:
+  {{- if .Values.hostIPv4 }}
+  - IPv4
+  {{- end }}
+  {{- if .Values.hostIPv6 }}
+  - IPv6
+  {{- end }}
+  ports:
+  - port: 9618
+    protocol: TCP
+    targetPort: 9618
+    name: htcondor
+  - port: 51450
+    protocol: TCP
+    targetPort: 51450
+    name: htcondor-ha
+  - port: 41450
+    protocol: TCP
+    targetPort: 41450
+    name: htcondor-replication
+  selector:
+    app: htcondor-cm
+  externalIPs:
+  {{- if .Values.hostIPv4 }}
+  - {{ .Values.hostIPv4 }}
+  {{- end }}
+  {{- if .Values.hostIPv6 }}
+  - {{ .Values.hostIPv6 }}
+  {{- end }}
