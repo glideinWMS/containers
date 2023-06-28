@@ -2,7 +2,7 @@ services:
 
   factory-workspace:
     container_name: factory-workspace
-    image: localhost/factory-workspace-arm64:latest
+    image: gwmsdeveloper/factory-workspace:latest
     volumes:
       - gwms:/var/lib/gwms-factory/.condor/tokens.d
     networks:
@@ -13,7 +13,7 @@ services:
 
   frontend-workspace:
     container_name: frontend-workspace
-    image: localhost/frontend-workspace-arm64:latest
+    image: gwmsdeveloper/frontend-workspace:latest
     volumes:
       - gwms:/var/lib/gwms-frontend/.condor/tokens.d
     networks:
