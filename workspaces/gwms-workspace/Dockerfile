@@ -62,6 +62,9 @@ RUN adduser abc ;\
     mkdir /opt/abc && \
     chown abc: /opt/abc
 
+# Deploy secrets
+COPY secrets /opt/GlideinWMS/secrets
+
 
 # Should ssh be enabled/installed?
 # SSH config needs to be added

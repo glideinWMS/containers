@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2020 Fermi Research Alliance, LLC
 # SPDX-License-Identifier: Apache-2.0
 
-FROM gwmsdeveloper/gwms-workspace
+FROM localhost/gwms-workspace-arm64
 LABEL org.opencontainers.image.authors="marcom@fnal.gov,coimbra@fnal.gov"
 LABEL name="Devcontainer for the GlideinWMS Factory"
 
