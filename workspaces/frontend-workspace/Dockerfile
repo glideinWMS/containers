@@ -18,8 +18,7 @@ RUN rm -f /etc/condor/config.d/00-minicondor
 # Install development tools
 RUN dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo ;\
     dnf install -y gh vim zsh sudo psmisc bind-utils mlocate ;\
-    pip3 install debugpy ;\
-    echo 'PROMPT="%F{204}%n%f %F{86}%m%f %F{39}%d%f » "' > /root/.zshrc
+    pip3 install debugpy ;
 
 #################################
 # Cleaning caches to reduce size of image
@@ -28,12 +27,12 @@ RUN yum clean all
 # Deploy utility scripts
 COPY scripts /opt/GlideinWMS/scripts
 
-# Copy GlideinWMS Frontend configuration
+# Deploy GlideinWMS Frontend configuration
 COPY config/frontend.xml /etc/gwms-frontend/frontend.xml
 RUN chown frontend:frontend /etc/gwms-frontend/frontend.xml
 
 # Add test user
-RUN useradd -m -s /bin/bash testuser
+RUN useradd testuser
 COPY --chown=testuser:testuser testuser-home /home/testuser/* /home/testuser/
 
 # Default entry point

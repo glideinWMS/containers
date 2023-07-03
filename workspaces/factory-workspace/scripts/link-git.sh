@@ -1,7 +1,9 @@
 #!/bin/bash
 
 mkdir -p /opt/GlideinWMS
-git clone https://github.com/glideinWMS/glideinwms.git /opt/GlideinWMS/glideinwms
+if [ ! "$(ls -A /opt/GlideinWMS/glideinwms)" ]; then
+    git clone https://github.com/glideinWMS/glideinwms.git /opt/GlideinWMS/glideinwms
+fi
 rm -rf /usr/lib/python3.9/site-packages/glideinwms
 rm -rf /var/lib/gwms-factory/creation
 rm -rf /var/lib/gwms-factory/web-base

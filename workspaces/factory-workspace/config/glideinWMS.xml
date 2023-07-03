@@ -1,4 +1,4 @@
-<glidein advertise_delay="5" advertise_with_multiple="False" advertise_with_tcp="False" factory_name="gfactory_service" glidein_name="gfactory_instance" loop_delay="60" restart_attempts="3" restart_interval="1800" schedd_name="factory-workspace,schedd_glideins3@factory-workspace,schedd_glideins5@factory-workspace,schedd_glideins2@factory-workspace,schedd_glideins4@factory-workspace" factory_versioning="False">
+<glidein advertise_delay="5" advertise_with_multiple="False" advertise_with_tcp="False" factory_name="gfactory_service" glidein_name="gfactory_instance" loop_delay="60" restart_attempts="3" restart_interval="1800" schedd_name="factory-workspace.fnal.gov,schedd_glideins3@factory-workspace.fnal.gov,schedd_glideins5@factory-workspace.fnal.gov,schedd_glideins2@factory-workspace.fnal.gov,schedd_glideins4@factory-workspace.fnal.gov" factory_versioning="False">
    <log_retention>
       <condor_logs max_days="14.0" max_mbytes="100.0" min_days="3.0"/>
       <job_logs max_days="7.0" max_mbytes="100.0" min_days="3.0"/>
@@ -12,19 +12,19 @@
    <monitor_footer display_txt="" href_link=""/>
    <security key_length="2048" pub_key="RSA" remove_old_cred_age="30" remove_old_cred_freq="24" reuse_oldkey_onstartup_gracetime="900">
       <frontends>
-         <frontend name="vofrontend_service" identity="vofrontend_service@factory-workspace">
+         <frontend name="vofrontend_service" identity="vofrontend_service@factory-workspace.fnal.gov">
             <security_classes>
                <security_class name="frontend" username="frontend"/>
             </security_classes>
          </frontend>
-         <frontend name="decisionengine_service" identity="decisionengine_service@factory-workspace">
+         <frontend name="decisionengine_service" identity="decisionengine_service@factory-workspace.fnal.gov">
             <security_classes>
                <security_class name="frontend" username="decisionengine"/>
             </security_classes>
          </frontend>
       </frontends>
    </security>
-   <stage base_dir="/var/lib/gwms-factory/web-area/stage" use_symlink="True" web_base_url="http://factory-workspace/factory/stage"/>
+   <stage base_dir="/var/lib/gwms-factory/web-area/stage" use_symlink="True" web_base_url="http://factory-workspace.fnal.gov/factory/stage"/>
    <submit base_client_log_dir="/var/log/gwms-factory/client" base_client_proxies_dir="/var/lib/gwms-factory/client-proxies" base_dir="/var/lib/gwms-factory/work-dir" base_log_dir="/var/log/gwms-factory/server"/>
    <attrs>
       <attr name="CONDOR_VERSION" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="default"/>
@@ -33,7 +33,7 @@
       <attr name="USE_MATCH_AUTH" const="True" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="True"/>
    </attrs>
    <entries>
-      <entry name="TEST_ENTRY" enabled="False" gatekeeper="gatekeeper.domain.tld/jobmanager-condor" gridtype="gt2" rsl="(queue=default)(jobtype=single)" schedd_name="schedd_glideins2@factory-workspace" verbosity="std" work_dir="OSG">
+      <entry name="TEST_ENTRY" enabled="False" gatekeeper="gatekeeper.domain.tld/jobmanager-condor" gridtype="gt2" rsl="(queue=default)(jobtype=single)" schedd_name="schedd_glideins2@factory-workspace.fnal.gov" verbosity="std" work_dir="AUTO">
          <config>
             <max_jobs>
                <per_entry held="1000" idle="4000" glideins="10000"/>
@@ -51,7 +51,6 @@
          <attrs>
             <attr name="CONDOR_ARCH" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="default"/>
             <attr name="CONDOR_OS" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="default"/>
-            <attr name="GLEXEC_BIN" const="True" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="OSG"/>
             <attr name="GLIDEIN_Site" const="True" glidein_publish="True" job_publish="True" parameter="True" publish="True" type="string" value="ITB_GRATIA_TEST"/>
          </attrs>
          <files>
@@ -61,8 +60,7 @@
          <monitorgroups>
          </monitorgroups>
       </entry>
-      <entry name="fermicloud489_SciToken" enabled="True" gatekeeper="fermicloud489.fnal.gov fermicloud489.fnal.gov:9619" gridtype="condor" verbosity="std" work_dir="OSG" trust_domain="grid" auth_method="scitoken">
-      <!-- <entry name="fermicloud489_SciToken" enabled="True" gatekeeper="fermicloud489.fnal.gov fermicloud489.fnal.gov:9619" gridtype="condor" verbosity="std" work_dir="OSG" trust_domain="grid" auth_method="scitoken,grid_proxy"> -->
+      <entry name="ce-workspace.fnal.gov" enabled="True" gatekeeper="ce-workspace.fnal.gov ce-workspace.fnal.gov:9619" gridtype="condor" verbosity="std" work_dir="AUTO" trust_domain="grid" auth_method="scitoken">
          <config>
             <max_jobs>
                <per_entry held="1000" idle="4000" glideins="10000"/>
@@ -78,127 +76,10 @@
          <allow_frontends>
          </allow_frontends>
          <attrs>
+            <attr name="GLIDEIN_Site" const="True" glidein_publish="True" job_publish="True" parameter="True" publish="True" type="string" value="ce-workspace.fnal.gov"/>
+            <attr name="CONDOR_VERSION" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="default"/>
             <attr name="CONDOR_ARCH" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="x86"/>
-            <attr name="CONDOR_OS" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="rhel7"/>
-            <attr name="GLIDEIN_Site" const="True" glidein_publish="True" job_publish="True" parameter="True" publish="True" type="string" value="fermicloud489_SciToken"/>
-            <attr const="False" glidein_publish="False" job_publish="False" name="CONDOR_VERSION" parameter="True" publish="True" type="string" value="9.0.0"/>
-         </attrs>
-         <files>
-         </files>
-         <infosys_refs>
-         </infosys_refs>
-         <monitorgroups>
-         </monitorgroups>
-      </entry>
-      <entry name="fermicloud489_GSI" enabled="True" gatekeeper="fermicloud489.fnal.gov fermicloud489.fnal.gov:9619" gridtype="condor" verbosity="std" work_dir="OSG" trust_domain="grid" auth_method="grid_proxy">
-         <config>
-            <max_jobs>
-               <per_entry held="1000" idle="4000" glideins="10000"/>
-               <default_per_frontend held="100" idle="400" glideins="5000"/>
-               <per_frontends>
-               </per_frontends>
-            </max_jobs>
-            <release max_per_cycle="20" sleep="0.2"/>
-            <remove max_per_cycle="5" sleep="0.2"/>
-            <restrictions require_voms_proxy="False"/>
-            <submit cluster_size="10" max_per_cycle="100" sleep="0.2"/>
-         </config>
-         <allow_frontends>
-         </allow_frontends>
-         <attrs>
-            <attr name="CONDOR_ARCH" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="x86"/>
-            <attr name="CONDOR_OS" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="rhel7"/>
-            <attr name="GLIDEIN_Site" const="True" glidein_publish="True" job_publish="True" parameter="True" publish="True" type="string" value="fermicloud489_GSI"/>
-            <attr const="False" glidein_publish="False" job_publish="False" name="CONDOR_VERSION" parameter="True" publish="True" type="string" value="9.0.0"/>
-         </attrs>
-         <files>
-         </files>
-         <infosys_refs>
-         </infosys_refs>
-         <monitorgroups>
-         </monitorgroups>
-      </entry>
-      <entry name="ITB_SCITOKENS_CE" enabled="True" gatekeeper="fermicloud530.fnal.gov fermicloud530.fnal.gov:9619" gridtype="condor" verbosity="std" work_dir="OSG" trust_domain="grid" auth_method="grid_proxy">
-      <!-- <entry name="ITB_SCITOKENS_CE" enabled="True" gatekeeper="fermicloud530.fnal.gov fermicloud530.fnal.gov:9619" gridtype="condor" verbosity="std" work_dir="OSG" trust_domain="grid" auth_method="scitoken;scitoken,grid_proxy"> -->
-         <config>
-            <max_jobs>
-               <per_entry held="1000" idle="4000" glideins="10000"/>
-               <default_per_frontend held="100" idle="400" glideins="5000"/>
-               <per_frontends>
-               </per_frontends>
-            </max_jobs>
-            <release max_per_cycle="20" sleep="0.2"/>
-            <remove max_per_cycle="5" sleep="0.2"/>
-            <restrictions require_voms_proxy="False"/>
-            <submit cluster_size="10" max_per_cycle="100" sleep="0.2"/>
-         </config>
-         <allow_frontends>
-         </allow_frontends>
-         <attrs>
-            <attr name="CONDOR_ARCH" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="x86"/>
-            <attr name="CONDOR_OS" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="rhel7"/>
-            <attr name="GLIDEIN_Site" const="True" glidein_publish="True" job_publish="True" parameter="True" publish="True" type="string" value="ITB_SCITOKENS_CE"/>
-            <attr const="False" glidein_publish="False" job_publish="False" name="CONDOR_VERSION" parameter="True" publish="True" type="string" value="9.0.0"/>
-         </attrs>
-         <files>
-         </files>
-         <infosys_refs>
-         </infosys_refs>
-         <monitorgroups>
-         </monitorgroups>
-      </entry>
-      <entry name="fermicloud528" enabled="False" gatekeeper="fermicloud528.fnal.gov fermicloud528.fnal.gov:9619" gridtype="condor" verbosity="std" work_dir="OSG" trust_domain="grid" auth_method="grid_proxy">
-         <config>
-            <max_jobs>
-               <per_entry held="1000" idle="4000" glideins="10000"/>
-               <default_per_frontend held="100" idle="400" glideins="5000"/>
-               <per_frontends>
-               </per_frontends>
-            </max_jobs>
-            <release max_per_cycle="20" sleep="0.2"/>
-            <remove max_per_cycle="5" sleep="0.2"/>
-            <restrictions require_voms_proxy="False"/>
-            <submit cluster_size="10" max_per_cycle="100" sleep="0.2"/>
-         </config>
-         <allow_frontends>
-         </allow_frontends>
-         <attrs>
-            <attr name="CONDOR_ARCH" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="x86"/>
-            <attr name="CONDOR_OS" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="rhel7"/>
-            <attr name="GLIDEIN_Site" const="True" glidein_publish="True" job_publish="True" parameter="True" publish="True" type="string" value="fermicloud528"/>
-            <attr const="False" glidein_publish="False" job_publish="False" name="CONDOR_VERSION" parameter="True" publish="True" type="string" value="9.0.0"/>
-         </attrs>
-         <files>
-         </files>
-         <infosys_refs>
-         </infosys_refs>
-         <monitorgroups>
-         </monitorgroups>
-      </entry>
-      <entry name="ITB_FC_CE2" auth_method="grid_proxy" enabled="False" gatekeeper="fermicloud592.fnal.gov fermicloud592.fnal.gov:9619" gridtype="condor" rsl="" trust_domain="grid" verbosity="std" work_dir="OSG">
-         <config>
-            <max_jobs>
-               <default_per_frontend glideins="5000" held="50" idle="100" />
-               <per_entry glideins="10000" held="1000" idle="2000" />
-               <per_frontends>
-               </per_frontends>
-            </max_jobs>
-            <release max_per_cycle="20" sleep="0.2" />
-            <remove max_per_cycle="5" sleep="0.2" />
-            <restrictions require_glidein_glexec_use="False" require_voms_proxy="False" />
-            <submit cluster_size="10" max_per_cycle="100" sleep="0.2" slots_layout="fixed">
-               <submit_attrs>
-               </submit_attrs>
-            </submit>
-         </config>
-         <allow_frontends>
-         </allow_frontends>
-         <attrs>
-            <attr const="False" glidein_publish="False" job_publish="False" name="CONDOR_ARCH" parameter="True" publish="True" type="string" value="default" />
-            <attr const="False" glidein_publish="False" job_publish="False" name="CONDOR_OS" parameter="True" publish="True" type="string" value="rhel7" />
-            <attr const="True" glidein_publish="False" job_publish="False" name="GLEXEC_JOB" parameter="True" publish="True" type="string" value="False" />
-            <attr const="True" glidein_publish="True" job_publish="True" name="GLIDEIN_Site" parameter="True" publish="True" type="string" value="ITB_FC_CE2" />
-            <attr const="True" glidein_publish="True" job_publish="False" name="USE_CCB" parameter="True" publish="True" type="string" value="True" />
+            <attr name="CONDOR_OS" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="rhel9"/>
          </attrs>
          <files>
          </files>
@@ -209,9 +90,9 @@
       </entry>
    </entries>
    <condor_tarballs>
-      <condor_tarball arch="default" base_dir="/usr" os="default" version="default"/>
-      <condor_tarball arch="x86" base_dir="/var/lib/gwms-factory/condor/condor-9.0.0-1-x86_64_CentOS7-stripped" os="rhel7" version="9.0.0"/>
-      <condor_tarball arch="default" base_dir="/var/lib/gwms-factory/condor/condor-9.0.0-1-x86_64_CentOS7-stripped" os="rhel7" version="default"/>
+      <condor_tarball arch="default" os="default" version="default" base_dir="/var/lib/gwms-factory/condor/condor-10.6.0-1-x86_64_AlmaLinux9-stripped"/>
+      <condor_tarball arch="x86"     os="rhel9"   version="default" base_dir="/var/lib/gwms-factory/condor/condor-10.6.0-1-x86_64_AlmaLinux9-stripped"/>
+      <condor_tarball arch="x86"     os="rhel9"   version="10.6.0"  base_dir="/var/lib/gwms-factory/condor/condor-10.6.0-1-x86_64_AlmaLinux9-stripped"/>
    </condor_tarballs>
    <files>
    </files>

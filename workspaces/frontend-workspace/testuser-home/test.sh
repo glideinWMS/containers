@@ -1,4 +1,6 @@
+#!/bin/bash
+
 echo "####### BEGIN #######"
-condor_chirp -h
-sleep 300
+hostname
+env
 echo "######## END ########"
