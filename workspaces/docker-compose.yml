@@ -13,8 +13,8 @@ services:
     container_name: factory-workspace.fnal.gov
     image: gwmsdeveloper/factory-workspace:latest
     volumes:
-      - gwms:/var/lib/gwms-factory/.condor/tokens.d
-      - ${GMWS_PATH}:/opt/GlideinWMS/glideinwms
+      - gwms-tokens:/var/lib/gwms-factory/.condor/tokens.d
+      - gwms-dev:/opt/GlideinWMS
     networks:
       - gwms
     hostname: factory-workspace.fnal.gov
@@ -27,8 +27,8 @@ services:
     container_name: frontend-workspace.fnal.gov
     image: gwmsdeveloper/frontend-workspace:latest
     volumes:
-      - gwms:/var/lib/gwms-frontend/.condor/tokens.d
-      - ${GMWS_PATH}:/opt/GlideinWMS/glideinwms
+      - gwms-tokens:/var/lib/gwms-frontend/.condor/tokens.d
+      - gwms-dev:/opt/GlideinWMS
     networks:
       - gwms
     hostname: frontend-workspace.fnal.gov
@@ -38,7 +38,9 @@ services:
     stdin_open: true
 
 volumes:
-  gwms:
+  gwms-dev:
+    driver: local
+  gwms-tokens:
     driver: local
 
 networks:

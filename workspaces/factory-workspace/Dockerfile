@@ -25,7 +25,8 @@ RUN dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.rep
 RUN dnf clean all
 
 # Deploy utility scripts
-COPY scripts /opt/GlideinWMS/scripts
+COPY scripts /root/scripts
+RUN ln -s /root/scripts/* /usr/local/bin
 
 # Dowload HTCondor tarballs
 RUN pushd /var/lib/gwms-factory/condor ;\

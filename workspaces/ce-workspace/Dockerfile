@@ -16,7 +16,8 @@ RUN dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.rep
     pip3 install debugpy ;
 
 # Deploy utility scripts
-COPY scripts /opt/GlideinWMS/scripts
+COPY scripts /root/scripts
+RUN ln -s /root/scripts/* /usr/local/bin
 
 # Deploy HTCondor-CE configuration
 COPY config/10-local.conf /etc/condor/config.d/10-local.conf

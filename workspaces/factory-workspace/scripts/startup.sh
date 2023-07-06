@@ -1,8 +1,8 @@
 #!/bin/bash
 
-./opt/GlideinWMS/scripts/create-host-certificate.sh
-./opt/GlideinWMS/scripts/create-tokens.sh
-./opt/GlideinWMS/scripts/link-git.sh
+bash /root/scripts/create-host-certificate.sh
+bash /root/scripts/create-tokens.sh
+bash /root/scripts/link-git.sh
 
 gwms-factory upgrade
 
