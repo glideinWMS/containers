@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: 2020 Fermi Research Alliance, LLC
+# SPDX-License-Identifier: Apache-2.0
+
+#IMAGE_NAMESPACE: 'glideinwms'
+
+services:
+
+  gwms-workspace:
+    # Added for build. Will start and exit shortly after
+    container_name: gwms-workspace.fnal.gov
+    build:
+      context: .
+      dockerfile: gwms-workspace/Dockerfile
+    image: ${IMAGE_NAMESPACE-glideinwms}/gwms-workspace:latest
+    # TODO: the following seems not to work (error on build) 
+    #  If there is a way to have a service for a base image only for build this can be moved in the main compose.yml 
+    #deploy:
+    #  mode: replicated
+    #  replicas: 0

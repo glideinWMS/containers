@@ -17,3 +17,31 @@ Some notable tools used in these containers:
 
 -   [Supervisor](http://supervisord.org/) since [systemd and similars don't work so well in containers](https://docs.docker.com/config/containers/multi-service_container/)
 -   [Docker systemctl replacement](https://github.com/gdraheim/docker-systemctl-replacement) that allows to run most systemctl commands also without systemd
+
+## Use
+
+To use the containers you need docker or podman (recommended).
+You can start the GlideinWMS ITB setup with (IMAGE_NAMESPACE is optional; GMWS_PATH is optional, is created if not existing, 
+and a local volume is used if not passed):
+```bash
+GMWS_PATH=/root/ws-test/gwms/ IMAGE_NAMESPACE=glideinwms podman-compose up -d
+```
+and bring it down with `podman-compose down`.
+
+If you changed the containers or prefer a local build, 
+you can also build all the GlideinWMS containers with (the IMAGE_NAMESPACE variable is optional):
+```bash
+IMAGE_NAMESPACE=glideinwms ./build-all.sh
+# or
+IMAGE_NAMESPACE=glideinwms podman-compose build -f compose-buildbase.yml
+IMAGE_NAMESPACE=glideinwms podman-compose build
+```
+
+Other useful commands:
+```bash
+podman ps -a
+podman images
+podman exec -it ce-workspace.fnal.gov /bin/bash
+podman exec -it factory-workspace.fnal.gov /bin/bash
+podman exec -it frontend-workspace.fnal.gov /bin/bash
+```

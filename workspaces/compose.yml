@@ -1,8 +1,18 @@
+# SPDX-FileCopyrightText: 2020 Fermi Research Alliance, LLC
+# SPDX-License-Identifier: Apache-2.0
+
+# IMAGE_NAMESPACE: 'glideinwms'
+# GMWS_PATH: 'gwms-dev-local'
+# TODO: network configuration to be able to interact w/ outside CEs/entries
+
 services:
 
   ce-workspace:
     container_name: ce-workspace.fnal.gov
-    image: gwmsdeveloper/ce-workspace:latest
+    build:
+      context: .
+      dockerfile: ce-workspace/Dockerfile
+    image: ${IMAGE_NAMESPACE-glideinwms}/ce-workspace:latest
     networks:
       - gwms
     hostname: ce-workspace.fnal.gov
@@ -11,10 +21,13 @@ services:
 
   factory-workspace:
     container_name: factory-workspace.fnal.gov
-    image: gwmsdeveloper/factory-workspace:latest
+    build:
+      context: .
+      dockerfile: factory-workspace/Dockerfile
+    image: ${IMAGE_NAMESPACE-glideinwms}/factory-workspace:latest
     volumes:
       - gwms-tokens:/var/lib/gwms-factory/.condor/tokens.d
-      - gwms-dev:/opt/GlideinWMS
+      - ${GMWS_PATH-gwms-dev-local}:/opt/gwms
     networks:
       - gwms
     hostname: factory-workspace.fnal.gov
@@ -25,10 +38,13 @@ services:
 
   frontend-workspace:
     container_name: frontend-workspace.fnal.gov
-    image: gwmsdeveloper/frontend-workspace:latest
+    build:
+      context: .
+      dockerfile: frontend-workspace/Dockerfile
+    image: ${IMAGE_NAMESPACE-glideinwms}/frontend-workspace:latest
     volumes:
       - gwms-tokens:/var/lib/gwms-frontend/.condor/tokens.d
-      - gwms-dev:/opt/GlideinWMS
+      - ${GMWS_PATH-gwms-dev-local}:/opt/gwms
     networks:
       - gwms
     hostname: frontend-workspace.fnal.gov
@@ -38,7 +54,7 @@ services:
     stdin_open: true
 
 volumes:
-  gwms-dev:
+  gwms-dev-local:
     driver: local
   gwms-tokens:
     driver: local
