@@ -21,12 +21,19 @@ Some notable tools used in these containers:
 ## Use
 
 To use the containers you need docker or podman (recommended).
-You can start the GlideinWMS ITB setup with (IMAGE_NAMESPACE is optional; GMWS_PATH is optional, is created if not existing, 
-and a local volume is used if not passed):
+You can start the GlideinWMS ITB setup with (IMAGE_NAMESPACE is optional, the glideinwms namespace is the default, 
+you can use local or also a full path like `docker.io/USERNAME/IMAGE`; 
+GMWS_PATH is optional, is created if not existing, and a local volume is used if not passed):
 ```bash
 GMWS_PATH=/root/ws-test/gwms/ IMAGE_NAMESPACE=glideinwms podman-compose up -d
 ```
 and bring it down with `podman-compose down`.
+
+Note that this ITB setup uses a local private virtual network, with outbound and no inbound connectivity. 
+The domain is fictionary, `glideinwms.org`, but everything works because DNS, certificates and config files 
+are configured consistently.
+Do not use this setup connected to the open Internet. The CA certificate and key used to self-sign the ITB
+host certificates are publicly available, anyone can generate new host certificates!
 
 If you changed the containers or prefer a local build, 
 you can also build all the GlideinWMS containers with (the IMAGE_NAMESPACE variable is optional):
@@ -41,7 +48,7 @@ Other useful commands:
 ```bash
 podman ps -a
 podman images
-podman exec -it ce-workspace.fnal.gov /bin/bash
-podman exec -it factory-workspace.fnal.gov /bin/bash
-podman exec -it frontend-workspace.fnal.gov /bin/bash
+podman exec -it ce-workspace.glideinwms.org /bin/bash
+podman exec -it factory-workspace.glideinwms.org /bin/bash
+podman exec -it frontend-workspace.glideinwms.org /bin/bash
 ```

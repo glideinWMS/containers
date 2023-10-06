@@ -7,7 +7,7 @@ services:
 
   gwms-workspace:
     # Added for build. Will start and exit shortly after
-    container_name: gwms-workspace.fnal.gov
+    container_name: gwms-workspace.glideinwms.org
     build:
       context: .
       dockerfile: gwms-workspace/Dockerfile

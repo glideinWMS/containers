@@ -8,19 +8,19 @@
 services:
 
   ce-workspace:
-    container_name: ce-workspace.fnal.gov
+    container_name: ce-workspace.glideinwms.org
     build:
       context: .
       dockerfile: ce-workspace/Dockerfile
     image: ${IMAGE_NAMESPACE-glideinwms}/ce-workspace:latest
     networks:
       - gwms
-    hostname: ce-workspace.fnal.gov
+    hostname: ce-workspace.glideinwms.org
     tty: true
     stdin_open: true
 
   factory-workspace:
-    container_name: factory-workspace.fnal.gov
+    container_name: factory-workspace.glideinwms.org
     build:
       context: .
       dockerfile: factory-workspace/Dockerfile
@@ -30,14 +30,14 @@ services:
       - ${GMWS_PATH-gwms-dev-local}:/opt/gwms
     networks:
       - gwms
-    hostname: factory-workspace.fnal.gov
+    hostname: factory-workspace.glideinwms.org
     depends_on:
       - ce-workspace
     tty: true
     stdin_open: true
 
   frontend-workspace:
-    container_name: frontend-workspace.fnal.gov
+    container_name: frontend-workspace.glideinwms.org
     build:
       context: .
       dockerfile: frontend-workspace/Dockerfile
@@ -47,7 +47,7 @@ services:
       - ${GMWS_PATH-gwms-dev-local}:/opt/gwms
     networks:
       - gwms
-    hostname: frontend-workspace.fnal.gov
+    hostname: frontend-workspace.glideinwms.org
     depends_on:
       - factory-workspace
     tty: true

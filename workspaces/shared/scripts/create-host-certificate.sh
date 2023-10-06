@@ -49,7 +49,7 @@ fi
 openssl genpkey -algorithm RSA -out "$KEY_FILE" -pass pass:"$PASSPHRASE"
 
 # Generate a certificate signing request (CSR)
-openssl req -new -key "$KEY_FILE" -out "$CERT_FILE" -subj "/C=US/ST=Illinois/L=Batavia/O=Fermilab/CN=$COMMON_NAME"
+openssl req -new -key "$KEY_FILE" -out "$CERT_FILE" -subj "/C=US/ST=Illinois/L=Batavia/O=GlideinWMS/CN=$COMMON_NAME"
 
 # Generate a self-signed certificate using the CSR and the CA secrets
 openssl x509 -req -in "$CERT_FILE" -CA "$CA_CERT" -CAkey "$CA_KEY" -out "$CERT_FILE" -days "$VALIDITY_PERIOD"

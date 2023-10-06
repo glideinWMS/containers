@@ -1,4 +1,4 @@
-<glidein advertise_delay="5" advertise_with_multiple="False" advertise_with_tcp="False" factory_name="gfactory_service" glidein_name="gfactory_instance" loop_delay="60" restart_attempts="3" restart_interval="1800" schedd_name="factory-workspace.fnal.gov,schedd_glideins3@factory-workspace.fnal.gov,schedd_glideins5@factory-workspace.fnal.gov,schedd_glideins2@factory-workspace.fnal.gov,schedd_glideins4@factory-workspace.fnal.gov" factory_versioning="False">
+<glidein advertise_delay="5" advertise_with_multiple="False" advertise_with_tcp="False" factory_name="gfactory_service" glidein_name="gfactory_instance" loop_delay="60" restart_attempts="3" restart_interval="1800" schedd_name="factory-workspace.glideinwms.org,schedd_glideins3@factory-workspace.glideinwms.org,schedd_glideins5@factory-workspace.glideinwms.org,schedd_glideins2@factory-workspace.glideinwms.org,schedd_glideins4@factory-workspace.glideinwms.org" factory_versioning="False">
    <log_retention>
       <condor_logs max_days="14.0" max_mbytes="100.0" min_days="3.0"/>
       <job_logs max_days="7.0" max_mbytes="100.0" min_days="3.0"/>
@@ -13,19 +13,19 @@
    <monitor_footer display_txt="" href_link=""/>
    <security key_length="2048" pub_key="RSA" remove_old_cred_age="30" remove_old_cred_freq="24" reuse_oldkey_onstartup_gracetime="900">
       <frontends>
-         <frontend name="vofrontend_service" identity="vofrontend_service@factory-workspace.fnal.gov">
+         <frontend name="vofrontend_service" identity="vofrontend_service@factory-workspace.glideinwms.org">
             <security_classes>
                <security_class name="frontend" username="frontend"/>
             </security_classes>
          </frontend>
-         <frontend name="decisionengine_service" identity="decisionengine_service@factory-workspace.fnal.gov">
+         <frontend name="decisionengine_service" identity="decisionengine_service@factory-workspace.glideinwms.org">
             <security_classes>
                <security_class name="frontend" username="decisionengine"/>
             </security_classes>
          </frontend>
       </frontends>
    </security>
-   <stage base_dir="/var/lib/gwms-factory/web-area/stage" use_symlink="True" web_base_url="http://factory-workspace.fnal.gov/factory/stage"/>
+   <stage base_dir="/var/lib/gwms-factory/web-area/stage" use_symlink="True" web_base_url="http://factory-workspace.glideinwms.org/factory/stage"/>
    <submit base_client_log_dir="/var/log/gwms-factory/client" base_client_proxies_dir="/var/lib/gwms-factory/client-proxies" base_dir="/var/lib/gwms-factory/work-dir" base_log_dir="/var/log/gwms-factory/server"/>
    <attrs>
       <attr name="CONDOR_VERSION" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="default"/>
@@ -34,7 +34,7 @@
       <attr name="GLIDEIN_SINGULARITY_REQUIRE" const="True" glidein_publish="True" job_publish="False" parameter="False" publish="True" type="string" value="PREFERRED"/>
    </attrs>
    <entries>
-      <entry name="TEST_ENTRY" enabled="False" gatekeeper="gatekeeper.domain.tld/jobmanager-condor" gridtype="gt2" rsl="(queue=default)(jobtype=single)" schedd_name="schedd_glideins2@factory-workspace.fnal.gov" verbosity="std" work_dir="AUTO">
+      <entry name="TEST_ENTRY" enabled="False" gatekeeper="gatekeeper.domain.tld/jobmanager-condor" gridtype="gt2" rsl="(queue=default)(jobtype=single)" schedd_name="schedd_glideins2@factory-workspace.glideinwms.org" verbosity="std" work_dir="AUTO">
          <config>
             <max_jobs>
                <per_entry held="1000" idle="4000" glideins="10000"/>
@@ -61,7 +61,7 @@
          <monitorgroups>
          </monitorgroups>
       </entry>
-      <entry name="ce-workspace.fnal.gov" enabled="True" gatekeeper="ce-workspace.fnal.gov ce-workspace.fnal.gov:9619" gridtype="condor" verbosity="std" work_dir="AUTO" trust_domain="grid" auth_method="scitoken">
+      <entry name="ce-workspace.glideinwms.org" enabled="True" gatekeeper="ce-workspace.glideinwms.org ce-workspace.glideinwms.org:9619" gridtype="condor" verbosity="std" work_dir="AUTO" trust_domain="grid" auth_method="scitoken">
          <config>
             <max_jobs>
                <per_entry held="1000" idle="4000" glideins="10000"/>
@@ -77,7 +77,7 @@
          <allow_frontends>
          </allow_frontends>
          <attrs>
-            <attr name="GLIDEIN_Site" const="True" glidein_publish="True" job_publish="True" parameter="True" publish="True" type="string" value="ce-workspace.fnal.gov"/>
+            <attr name="GLIDEIN_Site" const="True" glidein_publish="True" job_publish="True" parameter="True" publish="True" type="string" value="ce-workspace.glideinwms.org"/>
             <attr name="CONDOR_VERSION" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="default"/>
             <attr name="CONDOR_ARCH" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="x86_64"/>
             <attr name="CONDOR_OS" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="rhel9"/>
@@ -89,7 +89,7 @@
          <monitorgroups>
          </monitorgroups>
       </entry>
-      <entry name="el7ce-workspace.fnal.gov" enabled="False" gatekeeper="el7ce-workspace.fnal.gov el7ce-workspace.fnal.gov:9619" gridtype="condor" verbosity="std" work_dir="AUTO" trust_domain="grid" auth_method="scitoken">
+      <entry name="el7ce-workspace.glideinwms.org" enabled="False" gatekeeper="el7ce-workspace.glideinwms.org el7ce-workspace.glideinwms.org:9619" gridtype="condor" verbosity="std" work_dir="AUTO" trust_domain="grid" auth_method="scitoken">
          <config>
             <max_jobs>
                <per_entry held="1000" idle="4000" glideins="10000"/>
@@ -105,7 +105,7 @@
          <allow_frontends>
          </allow_frontends>
          <attrs>
-            <attr name="GLIDEIN_Site" const="True" glidein_publish="True" job_publish="True" parameter="True" publish="True" type="string" value="ce-workspace.fnal.gov"/>
+            <attr name="GLIDEIN_Site" const="True" glidein_publish="True" job_publish="True" parameter="True" publish="True" type="string" value="el7ce-workspace.glideinwms.org"/>
             <attr name="CONDOR_VERSION" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="default"/>
             <attr name="CONDOR_ARCH" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="x86_64"/>
             <attr name="CONDOR_OS" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="rhel7"/>
