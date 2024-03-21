@@ -1,6 +1,8 @@
-Executable = /home/testuser/test.sh
-Output  = testjob.out 
-Error   = testjob.err
+executable = test.sh
+output  = testjob.out 
+error   = testjob.err
+log     = testjob.log
+should_transfer_files = yes
 
 +WantIOProxy=true
 

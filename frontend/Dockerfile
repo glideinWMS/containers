@@ -1,8 +1,8 @@
 # SPDX-FileCopyrightText: 2020 Fermi Research Alliance, LLC
 # SPDX-License-Identifier: Apache-2.0
 
-FROM opensciencegrid/software-base:3.5-el7-release-20211201-2122
-LABEL maintainer OSG Software <help@opensciencegrid.org>
+FROM opensciencegrid/software-base:23-el9-release
+LABEL maintainer="OSG Software <help@opensciencegrid.org>"
 
 # Create the frontend user with a fixed GID/UID
 # This is important so that we can use the same IDs in the persistent volume used for

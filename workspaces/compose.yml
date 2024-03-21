@@ -1,0 +1,64 @@
+# SPDX-FileCopyrightText: 2020 Fermi Research Alliance, LLC
+# SPDX-License-Identifier: Apache-2.0
+
+# IMAGE_NAMESPACE: 'glideinwms'
+# GMWS_PATH: 'gwms-dev-local'
+# TODO: network configuration to be able to interact w/ outside CEs/entries
+
+services:
+
+  ce-workspace:
+    container_name: ce-workspace.glideinwms.org
+    build:
+      context: .
+      dockerfile: ce-workspace/Dockerfile
+    image: ${IMAGE_NAMESPACE-glideinwms}/ce-workspace:latest
+    networks:
+      - gwms
+    hostname: ce-workspace.glideinwms.org
+    tty: true
+    stdin_open: true
+
+  factory-workspace:
+    container_name: factory-workspace.glideinwms.org
+    build:
+      context: .
+      dockerfile: factory-workspace/Dockerfile
+    image: ${IMAGE_NAMESPACE-glideinwms}/factory-workspace:latest
+    volumes:
+      - gwms-tokens:/var/lib/gwms-factory/.condor/tokens.d
+      - ${GMWS_PATH-gwms-dev-local}:/opt/gwms
+    networks:
+      - gwms
+    hostname: factory-workspace.glideinwms.org
+    depends_on:
+      - ce-workspace
+    tty: true
+    stdin_open: true
+
+  frontend-workspace:
+    container_name: frontend-workspace.glideinwms.org
+    build:
+      context: .
+      dockerfile: frontend-workspace/Dockerfile
+    image: ${IMAGE_NAMESPACE-glideinwms}/frontend-workspace:latest
+    volumes:
+      - gwms-tokens:/var/lib/gwms-frontend/.condor/tokens.d
+      - ${GMWS_PATH-gwms-dev-local}:/opt/gwms
+    networks:
+      - gwms
+    hostname: frontend-workspace.glideinwms.org
+    depends_on:
+      - factory-workspace
+    tty: true
+    stdin_open: true
+
+volumes:
+  gwms-dev-local:
+    driver: local
+  gwms-tokens:
+    driver: local
+
+networks:
+  gwms:
+    driver: bridge

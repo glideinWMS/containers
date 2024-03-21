@@ -6,10 +6,6 @@ FROM almalinux:9
 MAINTAINER Marco Mambelli "marcom@fnal.gov"
 LABEL name="Base workspace with EL9, OSG 3.6 and base packages required by GlideinWMS and HEPCloud"
 
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# !!! WARNING: OSG doesn't support arm64. This is an experimental image. Use with caution. !!!
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 # Installing some base packages, the CRB repo, needed by swig, and the EPEL (epel-release) and OSG repos
 # Not installing epel-next-release, consider it for the future
 # Not installing the HTCondor Madison repo (getting condor from OSG). In case needed (x509 is in HTCSS 9.0.x from HTCondor)
@@ -37,10 +33,14 @@ RUN dnf install -y cronie supervisor initscripts;\
 # Installing some base RPMs (gettext is needed by RELEASE, swig and many devel by jsonnet)
 RUN dnf install -y python3 python3-devel python3-cryptography python3-wheel make openssl-devel gcc gcc-c++ rpm-build gettext swig ;
     
+# Install development tools
+RUN dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo ;\
+    dnf install -y gh jq vim zsh sudo psmisc bind-utils mlocate ;\
+    pip3 install debugpy ;
 
 # Packages useful for development and administration
 # Common packages for all GlideinWMS/HEPCloud software
-RUN dnf -y install jq apptainer ;\
+RUN dnf -y install apptainer ;\
     dnf -y install python3-rrdtool osg-ca-certs ;
     # NOTE: .bash_aliases doesn't seem to be compatible with ALMA Linux 9
     #/usr/bin/curl -L -o ~/.bash_aliases https://raw.githubusercontent.com/glideinWMS/dev-tools/master/.bash_aliases 2>/dev/null && . ~/.bash_aliases && aliases-update ;
@@ -63,7 +63,7 @@ RUN adduser abc ;\
     chown abc: /opt/abc
 
 # Deploy secrets
-COPY secrets /opt/GlideinWMS/secrets
+COPY gwms-workspace/secrets /opt/localgwms/secrets
 
 
 # Should ssh be enabled/installed?
@@ -90,8 +90,9 @@ CMD ["/bin/bash"]
 # Cleaning caches to reduce size of image
 RUN dnf clean all
 
-# OSG suggested mount points
-RUN for MNTPOINT in \
+# GWMS and OSG suggested mount points
+RUN mkdir -p /opt/gwms ; \
+    for MNTPOINT in \
         /cvmfs \
         /hadoop \
         /hdfs \

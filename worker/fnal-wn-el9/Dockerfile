@@ -13,12 +13,12 @@ LABEL name="FNAL Worked Node on EL9 with OSG 3.6 Worker Node Client"
 # the packages consistent
 # Assigning the repo yum prio of 90
 # Installing wget to help with repo setup
-RUN yum install -y wget sed ;\
-    /usr/bin/wget http://research.cs.wisc.edu/htcondor/yum/repo.d/htcondor-stable-rhel9.repo -O /etc/yum.repos.d/condor.repo ;\
-    /usr/bin/wget http://research.cs.wisc.edu/htcondor/yum/RPM-GPG-KEY-HTCondor -O /etc/pki/rpm-gpg/RPM-GPG-KEY-HTCondor ;\
-    echo "priority=90" >> /etc/yum.repos.d/condor.repo ;\
-    echo "exclude=*.i686" >> /etc/yum.repos.d/condor.repo ;\
-    echo "gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-HTCondor" >> /etc/yum.repos.d/condor.repo
+#RUN yum install -y wget sed ;\
+#    /usr/bin/wget http://research.cs.wisc.edu/htcondor/yum/repo.d/htcondor-stable-rhel9.repo -O /etc/yum.repos.d/condor.repo ;\
+#    /usr/bin/wget http://research.cs.wisc.edu/htcondor/yum/RPM-GPG-KEY-HTCondor -O /etc/pki/rpm-gpg/RPM-GPG-KEY-HTCondor ;\
+#    echo "priority=90" >> /etc/yum.repos.d/condor.repo ;\
+#    echo "exclude=*.i686" >> /etc/yum.repos.d/condor.repo ;\
+#    echo "gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-HTCondor" >> /etc/yum.repos.d/condor.repo
 
 # Next setting up EPEL and OSG repositories
 # OSG by default has a YUM  prio of 98
@@ -48,23 +48,25 @@ RUN yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.n
 #        osg-wn-client krb5-workstation strace redhat-lsb-core mesa-libGLU mesa-libGLU-devel libXmu cvmfs gstreamer-plugins-base libXScrnSaver libSM-devel libXpm-devel libgfortran glibc.i686 \
 #        libXmu libXmu-devel expat-devel libxml2-devel mysql-libs libtiff libjpeg-turbo openssh-clients openssl-devel tzdata glibc-headers glibc-devel mpich mpich-devel numactl numactl-devel \
 #        singularity
-# TODO: temporary using osg-development to allow to install osg-wn-client, should be removed when the fix is in production
-RUN yum install -y  --enablerepo=powertools  --enablerepo=osg --enablerepo=osg-development \
+RUN yum install -y --enablerepo=crb --enablerepo=osg \
     osg-ca-certs \
     gcc-c++ libstdc++ xrootd-client-libs xrootd-libs xrootd-client-libs gfal2-plugin-xrootd \
-    osg-wn-client krb5-workstation strace redhat-lsb-core mesa-libGLU mesa-libGLU-devel libXmu libXmu-devel cvmfs libXScrnSaver libSM-devel libXpm-devel libgfortran glibc.i686 \
-    expat-devel libxml2-devel mysql-libs libtiff libjpeg-turbo openssh-clients openssl-devel tzdata glibc-headers glibc-devel singularity \
+    osg-wn-client krb5-workstation strace mesa-libGLU mesa-libGLU-devel libXmu libXmu-devel cvmfs libXScrnSaver libSM-devel libXpm-devel libgfortran glibc.i686 \
+    expat-devel libxml2-devel mysql-libs libtiff libjpeg-turbo openssh-clients openssl-devel tzdata glibc-headers glibc-devel apptainer \
     pcre2 xxhash-libs libzstd libzstd-devel mpich mpich-devel numactl numactl-devel libffi libffi-devel libcurl-devel \
     ftgl gl2ps libGLEW giflib libAfterImage \
     jq htgettoken \
     globus-gass-copy-progs globus-proxy-utils globus-xio-udt-driver gfal2-plugin-gridftp gfal2-plugin-srm uberftp \
     gsi-openssh-clients myproxy voms-clients-cpp stashcp \
     python3-setuptools python3-future python3-gfal2-util
+ 
+# NOTE: redhat-lsb-core package is made available through AlmaLinux Devel repo
+RUN dnf install -y almalinux-release-devel
+RUN dnf install -y redhat-lsb-core
 
 
-
-# Overriding the default singularity configuration
-ADD shared/singularity.conf /etc/singularity/singularity.conf
+# Overriding the default apptainer configuration
+ADD shared/apptainer.conf /etc/apptainer/apptainer.conf
 
 # SSH config needs to be added
 ADD shared/ssh_config /etc/ssh/ssh_config

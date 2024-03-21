@@ -17,8 +17,9 @@ name: Build and Push Docker image for workers (release)
 
 on:
   push:
-    branches: [main, osg35]
+    branches: [main ]
     path:
+      - worker/fnal-wn-el9/Dockerfile
       - worker/fnal-wn-el8/Dockerfile
       - worker/fnal-wn-sl7/Dockerfile
       - worker/fnal-wn-sl6/Dockerfile
@@ -34,7 +35,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: set label branch
         id: setlabel_branch
@@ -59,37 +60,64 @@ jobs:
           echo "DH_LABEL=$DH_LABEL-$(date +%Y%m%d-%H%M)" >> $GITHUB_ENV
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Log in to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Build and push SL6
+        id: docker_build_sl6
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          context: worker
+          file: worker/fnal-wn-sl6/Dockerfile
+          tags: fermilab/fnal-wn-sl6:${{env.DH_LABEL}}
+
       - name: Build and push SL7
         id: docker_build_el7
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           push: true
           context: worker
           file: worker/fnal-wn-sl7/Dockerfile
           tags: fermilab/fnal-wn-sl7:${{env.DH_LABEL}}
 
+      - name: Build and push SL7 dev
+        id: docker_build_el7_dev
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          context: worker
+          file: worker/fnal-dev-sl7/Dockerfile
+          tags: fermilab/fnal-dev-sl7:${{env.DH_LABEL}}
+
       - name: Build and push EL8
         id: docker_build_el8
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           push: true
           context: worker
           file: worker/fnal-wn-el8/Dockerfile
           tags: fermilab/fnal-wn-el8:${{env.DH_LABEL}}
 
-      - name: Build and push SL6
-        id: docker_build_sl6
+      - name: Build and push EL9
+        id: docker_build_el9
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          context: worker
+          file: worker/fnal-wn-el9/Dockerfile
+          tags: fermilab/fnal-wn-el9:${{env.DH_LABEL}}
+
+      - name: Build and push SL6 OSG 3.5
+        id: docker_build_sl6_osg35
         continue-on-error: true
         if: ${{ env.OSG_VERISON }} == 'osg35'
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           push: true
           context: worker

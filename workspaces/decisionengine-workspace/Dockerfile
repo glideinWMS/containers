@@ -2,9 +2,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # GWMS Workspace
-FROM fermilab/gwms-workspace
+ARG IMAGE_NAMESPACE=glideinwms
+FROM $IMAGE_NAMESPACE/gwms-workspace
 MAINTAINER Marco Mambelli "marcom@fnal.gov"
-LABEL name="Workspace with EL9, OSG 3.6 and the HE{Cloud Decision Engine"
+LABEL name="Workspace with EL9, OSG 3.6 and the HEPCloud Decision Engine"
 
 # See gwms-workspace for the repos setup and base packages
 
@@ -64,5 +65,5 @@ CMD ["/bin/bash"]
 RUN yum clean all
 
 # build info
-RUN echo "Source: fermilab/frontend-workspace" > /image-source-info.txt
+RUN echo "Source: $IMAGE_NAMESPACE/decisonengine-workspace" > /image-source-info.txt
 RUN echo "Timestamp:" `date --utc` | tee /image-build-info.txt
