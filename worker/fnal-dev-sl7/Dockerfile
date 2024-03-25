@@ -15,7 +15,7 @@ RUN yum -y install python-six emacs vim \
     && yum -y clean all
 
 RUN yum -y install yum-conf-context-fermilab.noarch
-RUN yum -y install fermilab-util_kx509 \
+RUN yum -y install fermilab-util_kx509 fermilab-conf_kerberos \
     && yum -y clean all
 
 # Default entry point
