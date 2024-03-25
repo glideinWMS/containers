@@ -28,16 +28,14 @@ RUN ln -s /root/scripts/* /usr/local/bin
 # HTCondor 10.6.0 to test a more recent version on Alma9
 # HTCondor 9.0.18 to test alsp hybrid configurations on EL7
 RUN pushd /var/lib/gwms-factory/condor ;\
-    wget https://research.cs.wisc.edu/htcondor/tarball/10/10.x/10.6.0/release/condor-10.6.0-x86_64_AlmaLinux9-stripped.tar.gz ;\
-    tar -xf condor-10.6.0-x86_64_AlmaLinux9-stripped.tar.gz ;\
-    rm -f condor-10.6.0-x86_64_AlmaLinux9-stripped.tar.gz ;\
-    wget https://research.cs.wisc.edu/htcondor/tarball/9.0/9.0.18/release/condor-9.0.18-x86_64_CentOS7-stripped.tar.gz ;\
-    tar -xf condor-9.0.18-x86_64_CentOS7-stripped.tar.gz ;\
-    rm -f condor-9.0.18-x86_64_CentOS7-stripped.tar.gz ;\
+    wget https://research.cs.wisc.edu/htcondor/tarball/10/10.x/10.6.0/release/condor-10.6.0-$(arch)_AlmaLinux9-stripped.tar.gz ;\
+    tar -xf condor-10.6.0-$(arch)_AlmaLinux9-stripped.tar.gz ;\
+    rm -f condor-10.6.0-$(arch)_AlmaLinux9-stripped.tar.gz ;\
     popd
 
 # Deploy GlideinWMS Factory and HTCondor configuration
 COPY factory-workspace/config/glideinWMS.xml /etc/gwms-factory/glideinWMS.xml
+RUN sed -i "s/\[ARCH\]/$(arch)/g" /etc/gwms-factory/glideinWMS.xml
 RUN chown gfactory:gfactory /etc/gwms-factory/glideinWMS.xml
 COPY shared/config/99-debug.conf /etc/condor/config.d/99-debug.conf
 COPY shared/config/99-cafile.conf /etc/condor/config.d/99-cafile.conf

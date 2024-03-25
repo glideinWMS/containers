@@ -3,7 +3,7 @@
 
 # Selecting AlmaLinux 9 as the base OS
 FROM almalinux:9
-MAINTAINER Marco Mambelli "marcom@fnal.gov"
+LABEL org.opencontainers.image.authors="marcom@fnal.gov"
 LABEL name="Base workspace with EL9, OSG 3.6 and base packages required by GlideinWMS and HEPCloud"
 
 # Installing some base packages, the CRB repo, needed by swig, and the EPEL (epel-release) and OSG repos
@@ -23,7 +23,7 @@ RUN dnf install -y wget sed git yum-utils ;\
     /bin/sed -i '/^enabled=1/a priority=99' /etc/yum.repos.d/epel.repo ;\
     dnf install -y https://repo.opensciencegrid.org/osg/3.6/osg-3.6-el9-release-latest.rpm ;\
     sed -i 's/\$basearch/x86_64/g' /etc/yum.repos.d/osg*
-    # TODO: remove the sed command above when OSG supports arm64
+    # TODO: remove the sed command above when OSG supports aarch64
 
 # Installing some system management RPMs/sw needed for containers (these are not needed for VMs)
 RUN dnf install -y cronie supervisor initscripts;\

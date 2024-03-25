@@ -58,18 +58,18 @@ if [[ -L /usr/lib/python${PYVER}/site-packages/glideinwms ]]; then
 fi
 
 # mv to *_rpm instead of rm -rf
-[[ -n "$VERBOSE" ]] echo "Linking GlideinWMS library to repository in $GWMS_SRC_DIR" || true
+[[ -n "$VERBOSE" ]] && echo "Linking GlideinWMS library to repository in $GWMS_SRC_DIR" || true
 mv /usr/lib/python${PYVER}/site-packages/glideinwms /usr/lib/python${PYVER}/site-packages/glideinwms_rpm
 ln -s "$GWMS_SRC_DIR" /usr/lib/python${PYVER}/site-packages/glideinwms
 if [[ -n "$IS_FACTORY" ]]; then
-    [[ -n "$VERBOSE" ]] echo "Linking Factory components to Git" || true
+    [[ -n "$VERBOSE" ]] && echo "Linking Factory components to Git" || true
     mv /var/lib/gwms-factory/creation /var/lib/gwms-factory/creation_rpm
     mv /var/lib/gwms-factory/web-base /var/lib/gwms-factory/web-base_rpm
     ln -s "$GWMS_SRC_DIR"/creation /var/lib/gwms-factory/creation
     ln -s "$GWMS_SRC_DIR"/creation/web_base /var/lib/gwms-factory/web-base
 fi
 if [[ -n "$IS_FRONTEND" ]]; then
-    [[ -n "$VERBOSE" ]] echo "Linking Frontend components to Git" || true
+    [[ -n "$VERBOSE" ]] && echo "Linking Frontend components to Git" || true
     mv /var/lib/gwms-frontend/creation /var/lib/gwms-frontend/creation_rpm
     mv /var/lib/gwms-frontend/web-base /var/lib/gwms-frontend/web-base_rpm
     ln -s "$GWMS_SRC_DIR"/creation /var/lib/gwms-frontend/creation
