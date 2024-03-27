@@ -79,36 +79,8 @@
          <attrs>
             <attr name="GLIDEIN_Site" const="True" glidein_publish="True" job_publish="True" parameter="True" publish="True" type="string" value="ce-workspace.glideinwms.org"/>
             <attr name="CONDOR_VERSION" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="default"/>
-            <attr name="CONDOR_ARCH" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="x86_64"/>
+            <attr name="CONDOR_ARCH" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="[ARCH]"/>
             <attr name="CONDOR_OS" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="rhel9"/>
-         </attrs>
-         <files>
-         </files>
-         <infosys_refs>
-         </infosys_refs>
-         <monitorgroups>
-         </monitorgroups>
-      </entry>
-      <entry name="el7ce-workspace.glideinwms.org" enabled="False" gatekeeper="el7ce-workspace.glideinwms.org el7ce-workspace.glideinwms.org:9619" gridtype="condor" verbosity="std" work_dir="AUTO" trust_domain="grid" auth_method="scitoken">
-         <config>
-            <max_jobs>
-               <per_entry held="1000" idle="4000" glideins="10000"/>
-               <default_per_frontend held="100" idle="400" glideins="5000"/>
-               <per_frontends>
-               </per_frontends>
-            </max_jobs>
-            <release max_per_cycle="20" sleep="0.2"/>
-            <remove max_per_cycle="5" sleep="0.2"/>
-            <restrictions require_voms_proxy="False"/>
-            <submit cluster_size="10" max_per_cycle="100" sleep="0.2"/>
-         </config>
-         <allow_frontends>
-         </allow_frontends>
-         <attrs>
-            <attr name="GLIDEIN_Site" const="True" glidein_publish="True" job_publish="True" parameter="True" publish="True" type="string" value="el7ce-workspace.glideinwms.org"/>
-            <attr name="CONDOR_VERSION" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="default"/>
-            <attr name="CONDOR_ARCH" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="x86_64"/>
-            <attr name="CONDOR_OS" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="rhel7"/>
          </attrs>
          <files>
          </files>
@@ -119,11 +91,9 @@
       </entry>
    </entries>
    <condor_tarballs>
-      <condor_tarball arch="default" os="default" version="default" base_dir="/var/lib/gwms-factory/condor/condor-10.6.0-1-x86_64_AlmaLinux9-stripped"/>
-      <condor_tarball arch="x86_64"  os="rhel9"   version="default" base_dir="/var/lib/gwms-factory/condor/condor-10.6.0-1-x86_64_AlmaLinux9-stripped"/>
-      <condor_tarball arch="x86_64"  os="rhel9"   version="10.6.0"  base_dir="/var/lib/gwms-factory/condor/condor-10.6.0-1-x86_64_AlmaLinux9-stripped"/>
-      <condor_tarball arch="x86_64"  os="rhel7"   version="default" base_dir="/var/lib/gwms-factory/condor/condor-9.0.18-1-x86_64_CentOS7-stripped"/>
-      <condor_tarball arch="x86_64"  os="rhel7"   version="9.0.18"  base_dir="/var/lib/gwms-factory/condor/condor-9.0.18-1-x86_64_CentOS7-stripped"/>
+      <condor_tarball arch="default" os="default" version="default" base_dir="/var/lib/gwms-factory/condor/condor-10.6.0-1-[ARCH]_AlmaLinux9-stripped"/>
+      <condor_tarball arch="[ARCH]"  os="rhel9"   version="default" base_dir="/var/lib/gwms-factory/condor/condor-10.6.0-1-[ARCH]_AlmaLinux9-stripped"/>
+      <condor_tarball arch="[ARCH]"  os="rhel9"   version="10.6.0"  base_dir="/var/lib/gwms-factory/condor/condor-10.6.0-1-[ARCH]_AlmaLinux9-stripped"/>
    </condor_tarballs>
    <files>
    </files>
