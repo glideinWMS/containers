@@ -26,11 +26,14 @@ RUN ln -s /root/scripts/* /usr/local/bin
 
 # Dowload HTCondor tarballs
 # HTCondor 10.6.0 to test a more recent version on Alma9
-# HTCondor 9.0.18 to test alsp hybrid configurations on EL7
+# HTCondor 9.0.18 to test alsp hybrid configurations on EL7 (x86_64 only)
 RUN pushd /var/lib/gwms-factory/condor ;\
     wget https://research.cs.wisc.edu/htcondor/tarball/10/10.x/10.6.0/release/condor-10.6.0-$(arch)_AlmaLinux9-stripped.tar.gz ;\
     tar -xf condor-10.6.0-$(arch)_AlmaLinux9-stripped.tar.gz ;\
     rm -f condor-10.6.0-$(arch)_AlmaLinux9-stripped.tar.gz ;\
+    wget https://research.cs.wisc.edu/htcondor/tarball/9.0/9.0.18/release/condor-9.0.18-x86_64_CentOS7-stripped.tar.gz ;\
+    tar -xf condor-9.0.18-x86_64_CentOS7-stripped.tar.gz ;\
+    rm -f condor-9.0.18-x86_64_CentOS7-stripped.tar.gz ;\
     popd
 
 # Deploy GlideinWMS Factory and HTCondor configuration

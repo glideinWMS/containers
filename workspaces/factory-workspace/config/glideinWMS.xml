@@ -94,6 +94,11 @@
       <condor_tarball arch="default" os="default" version="default" base_dir="/var/lib/gwms-factory/condor/condor-10.6.0-1-[ARCH]_AlmaLinux9-stripped"/>
       <condor_tarball arch="[ARCH]"  os="rhel9"   version="default" base_dir="/var/lib/gwms-factory/condor/condor-10.6.0-1-[ARCH]_AlmaLinux9-stripped"/>
       <condor_tarball arch="[ARCH]"  os="rhel9"   version="10.6.0"  base_dir="/var/lib/gwms-factory/condor/condor-10.6.0-1-[ARCH]_AlmaLinux9-stripped"/>
+      <!-- Uncomment the following lines to use enable HTCondor 9.0.18 for x86_64 RHEL7. WARNING: Incompatible with aarch64 -->
+      <!-- 
+      <condor_tarball arch="x86_64"  os="rhel7"   version="default" base_dir="/var/lib/gwms-factory/condor/condor-9.0.18-1-x86_64_CentOS7-stripped"/>
+      <condor_tarball arch="x86_64"  os="rhel7"   version="9.0.18"  base_dir="/var/lib/gwms-factory/condor/condor-9.0.18-1-x86_64_CentOS7-stripped"/>
+      -->
    </condor_tarballs>
    <files>
    </files>
