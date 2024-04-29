@@ -12,7 +12,7 @@ RUN yum -y install asciidoc autoconf automake bzip2-devel fontconfig-devel freet
     subversion swig tcl-devel texinfo tk-devel xcb-util-image-devel xcb-util-keysyms-devel xcb-util-renderutil-devel xcb-util-wm-devel xmlto xxhash-devel zstd \
     gtk2-devel
 
-RUN yum -y install python-six emacs vim \
+RUN yum -y install python-six emacs vim nano \
     && yum -y clean all
 
 RUN yum -y install yum-conf-context-fermilab.noarch
