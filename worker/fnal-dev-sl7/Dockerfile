@@ -10,7 +10,7 @@ RUN yum -y install asciidoc autoconf automake bzip2-devel fontconfig-devel freet
     harfbuzz-devel libAfterImage-devel libXft-devel libXi-devel libXrender-devel libgcc.i686 libjpeg-turbo-devel libpng-devel libstdc++-devel.i686 libtool \
     libuuid-devel libxkbcommon-devel libxkbcommon-x11-devel lz4-devel ncurses-devel openldap-devel perl-DBD-SQLite perl-ExtUtils-MakeMaker readline-devel \
     subversion swig tcl-devel texinfo tk-devel xcb-util-image-devel xcb-util-keysyms-devel xcb-util-renderutil-devel xcb-util-wm-devel xmlto xxhash-devel zstd \
-    gtk2-devel motif-devel
+    gtk2-devel motif-devel postgresql-devel
 
 RUN yum -y install python-six emacs vim nano \
     && yum -y clean all
