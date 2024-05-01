@@ -60,7 +60,8 @@ RUN yum install -y \
     jq \
     globus-gass-copy-progs globus-proxy-utils globus-xio-udt-driver gfal2-plugin-gridftp gfal2-plugin-srm uberftp \
     fts-client gsi-openssh-clients myproxy voms-clients-cpp stashcp \
-    python-setuptools python2-future python-backports-ssl_match_hostname python2-gfal2-util
+    python-setuptools python2-future python-backports-ssl_match_hostname python2-gfal2-util && \
+    chmod ugo+rx /usr/bin/ssh-agent
 
 # Installing apptainer 1.2.5 (+requirements) and not 1.3 from EPEL, to be able to use underlay on EL7 nodes
 RUN yum install -y fuse2fs && \
