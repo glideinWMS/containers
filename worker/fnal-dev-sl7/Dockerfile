@@ -11,10 +11,10 @@ RUN yum -y install asciidoc autoconf automake bzip2-devel fontconfig-devel freet
     libuuid-devel libxkbcommon-devel libxkbcommon-x11-devel lz4-devel ncurses-devel openldap-devel perl-DBD-SQLite perl-ExtUtils-MakeMaker readline-devel \
     subversion swig tcl-devel texinfo tk-devel xcb-util-image-devel xcb-util-keysyms-devel xcb-util-renderutil-devel xcb-util-wm-devel xmlto xxhash-devel zstd \
     gtk2-devel motif-devel postgresql-devel \
-    java-latest-openjdk-devel
+    java-latest-openjdk-devel \
+    mesa-dri-drivers
 
-RUN yum -y install python-six emacs vim nano screen \
-    htop \
+RUN yum -y install python-six emacs vim nano screen cvs htop \
     && yum -y clean all
 
 RUN yum -y install yum-conf-context-fermilab.noarch
