@@ -89,6 +89,7 @@
          <monitorgroups>
          </monitorgroups>
       </entry>
+      <!--
       <entry name="el7ce-workspace.glideinwms.org" enabled="False" gatekeeper="el7ce-workspace.glideinwms.org el7ce-workspace.glideinwms.org:9619" gridtype="condor" verbosity="std" work_dir="AUTO" trust_domain="grid" auth_method="scitoken">
          <config>
             <max_jobs>
@@ -117,6 +118,7 @@
          <monitorgroups>
          </monitorgroups>
       </entry>
+      -->
    </entries>
    <condor_tarballs>
       <condor_tarball arch="default" os="default" version="default" base_dir="/var/lib/gwms-factory/condor/condor-10.6.0-1-[ARCH]_AlmaLinux9-stripped"/>
