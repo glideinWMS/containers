@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # IMAGE_NAMESPACE: 'glideinwms'
-# GMWS_PATH: 'gwms-dev-local'
+# GWMS_PATH: 'gwms-dev-local'
 # TODO: network configuration to be able to interact w/ outside CEs/entries
 
 services:
@@ -27,7 +27,7 @@ services:
     image: ${IMAGE_NAMESPACE-glideinwms}/factory-workspace:latest
     volumes:
       - gwms-tokens:/var/lib/gwms-factory/.condor/tokens.d
-      - ${GMWS_PATH-gwms-dev-local}:/opt/gwms
+      - ${GWMS_PATH-gwms-dev-local}:/opt/gwms
     networks:
       - gwms
     hostname: factory-workspace.glideinwms.org
@@ -44,7 +44,7 @@ services:
     image: ${IMAGE_NAMESPACE-glideinwms}/frontend-workspace:latest
     volumes:
       - gwms-tokens:/var/lib/gwms-frontend/.condor/tokens.d
-      - ${GMWS_PATH-gwms-dev-local}:/opt/gwms
+      - ${GWMS_PATH-gwms-dev-local}:/opt/gwms
     networks:
       - gwms
     hostname: frontend-workspace.glideinwms.org
