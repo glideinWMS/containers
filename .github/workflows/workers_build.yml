@@ -12,23 +12,26 @@
 #  label is used as Docker Hub label instead of "latest"
 #  if date_tag id true a date tag is added to the Docker Hub label (+%Y%m%d-%H%M)
 # -X POST is also optional
+#
+# This workflow builds FNAL worker nodes images each time there is a change in the main branch
+# and by default tags them as ":devel", the unstable/testing images. To trigger a build tagged
+# as ":latest", the stable image series, you can use a dispatch (see above) with 
+#    -d '{"event_type":"worker-build", "client_payload": {"label":"latest", "date_tag":false}}'
+# or you can push a tag with a name starting with "latest", e.g. git tag latest.240510
 
 name: Build and Push Docker image for workers (release)
 
 on:
   push:
-    branches: [main ]
-    path:
-      - worker/fnal-wn-el9/Dockerfile
-      - worker/fnal-wn-el8/Dockerfile
-      - worker/fnal-wn-sl7/Dockerfile
-      - worker/fnal-wn-sl6/Dockerfile
+    branches: [main]
+    tags: [latest*]
+    paths: ['worker/**']
   repository_dispatch:
     types:
       - worker-build
 
 env:
-  DH_LABEL: latest
+  DH_LABEL: devel
   OSG_VERSION: NO
 
 jobs:
@@ -44,6 +47,14 @@ jobs:
           if [[ ${GITHUB_REF##*/} = osg* ]]; then
             echo "DH_LABEL=${GITHUB_REF##*/}" >> $GITHUB_ENV
             echo "OSG_VERISON=${GITHUB_REF##*/}" >> $GITHUB_ENV
+          fi
+
+      - name: set label tag latest
+        id: setlabel_tag_latest
+        shell: bash
+        run: |
+          if [[ ${GITHUB_REF##*/} = latest* ]]; then
+            echo "DH_LABEL=latest" >> $GITHUB_ENV
           fi
 
       - name: set label from parameter

@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: 2020 Fermi Research Alliance, LLC
+# SPDX-License-Identifier: Apache-2.0
+
+# compose file to check that wariablesa are defined
+# ${VARIABLE:-default}
+# ${VARIABLE-default}
+# ${VARIABLE:?err}
+# ${VARIABLE?err}
+# ${VARIABLE:-${FOO:-default}}
+
+# IMAGE_NAMESPACE: 'glideinwms'
+# GWMS_PATH: 'gwms-dev-local'
+
+services:
+  foo:
+    image: busybox
+    environment:
+      - COMPOSE_PROJECT_NAME
+    command: echo "I'm running ${COMPOSE_PROJECT_NAME} and vars ${GWMS_PATH?GWMS_PATH not defined} ${GWMS_PATH:?GWMS_PATH empty} ${IMAGE_NAMESPACE?IMAGE_NAMESPACE not defined} ${IMAGE_NAMESPACE:?IMAGE_NAMESPACE empty}"
+

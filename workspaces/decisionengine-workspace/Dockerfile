@@ -1,11 +1,34 @@
 # SPDX-FileCopyrightText: 2020 Fermi Research Alliance, LLC
 # SPDX-License-Identifier: Apache-2.0
 
-# GWMS Workspace
+# DE Workspace
 ARG IMAGE_NAMESPACE=glideinwms
 FROM $IMAGE_NAMESPACE/gwms-workspace
-MAINTAINER Marco Mambelli "marcom@fnal.gov"
-LABEL name="Workspace with EL9, OSG 3.6 and the HEPCloud Decision Engine"
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+ARG BUILD_VERSION=dev
+ARG BUILD_REF
+ARG BUILD_HASH
+ARG BUILD_SHA
+ARG BUILD_DATE
+# MAINTAINER is deprecated but it is needed to set Author in the image attributes
+MAINTAINER GlideinWMS Team <glideinwms@fnal.gov>
+LABEL name="Workspace with EL9, OSG 3.6 and the HEPCloud Decision Engine" \
+      org.opencontainers.image.authors="GlideinWMS Team glideinwms@fnal.gov" \
+      org.opencontainers.image.title="HEPCloud Decision Engine Workspace" \
+      org.opencontainers.image.description="Workspace with EL9, OSG 3.6 and the HEPCloud Decision Engine" \
+      org.opencontainers.image.url="https://hepcloud.github.io/" \
+      org.opencontainers.image.documentation="https://hepcloud.github.io/" \
+      org.opencontainers.image.source="https://github.com/glideinWMS/containers/tree/main/workspaces" \
+      org.opencontainers.image.vendor="The GlideinWMS Team" \
+      org.opencontainers.image.licenses="Apache-2.0" \
+      org.opencontainers.image.revision="$BUILD_HASH" \
+      org.opencontainers.image.ref.name="$BUILD_REF" \
+      org.opencontainers.image.created="$BUILD_DATE"
+# Declaring ports: webserver, htcondor(shared port)
+EXPOSE 80 9618
+
+RUN echo "Building DE dev image ($BUILD_SHA/$BUILD_DATE) on $BUILDPLATFORM, for $TARGETPLATFORM"
 
 # See gwms-workspace for the repos setup and base packages
 
@@ -60,10 +83,10 @@ exit
 # Default entry point
 CMD ["/bin/bash"]
 
-#################################
-# Cleaning caches to reduce size of image
-RUN yum clean all
+# This must be after all dnf/yum and pip commands
+# Cleaning YUM and DNF all caches (including disabled repos) and pip caches to reduce size of image
+RUN rm -rf /var/cache/yum/* /var/cache/dnf/* /root/.cache/pip/*
 
 # build info
 RUN echo "Source: $IMAGE_NAMESPACE/decisonengine-workspace" > /image-source-info.txt
-RUN echo "Timestamp:" `date --utc` | tee /image-build-info.txt
+RUN echo "Timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')" | tee /image-build-info.txt

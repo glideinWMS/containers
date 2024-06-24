@@ -1,11 +1,24 @@
 # SPDX-FileCopyrightText: 2020 Fermi Research Alliance, LLC
 # SPDX-License-Identifier: Apache-2.0
 
+# TODO: use multiple tags (can be a CSV or list)
+# TODO: Tag with version for releases
+#    https://github.com/actions/checkout#Checkout-a-different-branch
+#    git tag --points-at
+
 name: Build and Push Docker image (frontend)
 
 on:
   push:
-    branches: [main]
+    branches: [main ]
+    paths:
+      - 'frontend/**'
+      - 'factory/**'
+#  pull_request:
+#    branches: [main ]
+#    paths:
+#      - 'frontend/**'
+#      - 'factory/**'
   repository_dispatch:
     types:
       - dispatch-build

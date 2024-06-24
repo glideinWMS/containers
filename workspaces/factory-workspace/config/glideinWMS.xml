@@ -72,7 +72,11 @@
             <release max_per_cycle="20" sleep="0.2"/>
             <remove max_per_cycle="5" sleep="0.2"/>
             <restrictions require_voms_proxy="False"/>
-            <submit cluster_size="10" max_per_cycle="100" sleep="0.2"/>
+            <submit cluster_size="10" max_per_cycle="100" sleep="0.2">
+                <submit_attrs>
+                    <submit_attr name="maxMemory" value="RequestMemory"/>
+                </submit_attrs>
+            </submit>
          </config>
          <allow_frontends>
          </allow_frontends>
@@ -101,7 +105,11 @@
             <release max_per_cycle="20" sleep="0.2"/>
             <remove max_per_cycle="5" sleep="0.2"/>
             <restrictions require_voms_proxy="False"/>
-            <submit cluster_size="10" max_per_cycle="100" sleep="0.2"/>
+            <submit cluster_size="10" max_per_cycle="100" sleep="0.2">
+                <submit_attrs>
+                    <submit_attr name="maxMemory" value="RequestMemory"/>
+                </submit_attrs>
+            </submit>
          </config>
          <allow_frontends>
          </allow_frontends>

@@ -4,7 +4,7 @@
 # Selecting AlmaLinux 9 as the base OS
 FROM almalinux:9
 MAINTAINER Marco Mambelli "marcom@fnal.gov"
-LABEL name="FNAL Worked Node on EL9 with OSG 3.6 Worker Node Client"
+LABEL name="FNAL Worker Node on EL9 with OSG 3.6 Worker Node Client"
 
 # ThESE ARE NOT YET AVAILABLE
 # Setting up the HTCondor Madison repository
@@ -40,6 +40,7 @@ RUN yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.n
 #  ftgl gl2ps libGLEW giflib libAfterImage [LArSoft v09_16_00, V. Di Benedetto, RITM1085514]
 #  jq [SBND Mateus F. Carneiro, RITM1235906]
 #  htgettoken [Mu2e, Ray Culbertson, as part of RITM1572512]
+#  bzip2 [Mu2e, Ray Culbertson, as part of RITM2052307]
 # OSG has only: osg-wn-client redhat-lsb-core singularity
 # removed:  gfal2-plugin-xrootd-2.18.1-2.el7.x86_64, verify why it was added, now in OSG
 # TODO: temporary using osg-development, should be removed after 11/5
@@ -52,14 +53,17 @@ RUN yum install -y --enablerepo=crb --enablerepo=osg \
     osg-ca-certs \
     gcc-c++ libstdc++ xrootd-client-libs xrootd-libs xrootd-client-libs gfal2-plugin-xrootd \
     osg-wn-client krb5-workstation strace mesa-libGLU mesa-libGLU-devel libXmu libXmu-devel cvmfs libXScrnSaver libSM-devel libXpm-devel libgfortran glibc.i686 \
-    expat-devel libxml2-devel mysql-libs libtiff libjpeg-turbo openssh-clients openssl-devel tzdata glibc-headers glibc-devel apptainer \
+    expat-devel libxml2-devel mysql-libs libtiff libjpeg-turbo openssh-clients openssl-devel tzdata glibc-headers glibc-devel \
     pcre2 xxhash-libs libzstd libzstd-devel mpich mpich-devel numactl numactl-devel libffi libffi-devel libcurl-devel \
     ftgl gl2ps libGLEW giflib libAfterImage \
-    jq htgettoken \
+    jq htgettoken bzip2 \
     globus-gass-copy-progs globus-proxy-utils globus-xio-udt-driver gfal2-plugin-gridftp gfal2-plugin-srm uberftp \
     gsi-openssh-clients myproxy voms-clients-cpp stashcp \
-    python3-setuptools python3-future python3-gfal2-util
- 
+    python3-setuptools python3-future python3-gfal2-util python-unversioned-command
+
+# Installing apptainer 1.2.5 (+requirements) and not 1.3 from EPEL, to be able to use underlay on EL7 nodes
+RUN dnf install -y https://github.com/apptainer/apptainer/releases/download/v1.2.5/apptainer-1.2.5-1.x86_64.rpm
+
 # NOTE: redhat-lsb-core package is made available through AlmaLinux Devel repo
 RUN dnf install -y almalinux-release-devel
 RUN dnf install -y redhat-lsb-core

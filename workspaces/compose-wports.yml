@@ -1,0 +1,44 @@
+# SPDX-FileCopyrightText: 2020 Fermi Research Alliance, LLC
+# SPDX-License-Identifier: Apache-2.0
+
+# IMAGE_NAMESPACE: 'glideinwms'
+# GWMS_PATH: 'gwms-dev-local'
+# Variables used in imported compose.yml
+# Factory ports are bound in the 30000 range, Frontend in the 40000, CEs in the 20000
+
+services:
+
+  ce-workspace:
+    extends:
+      file: compose.yml
+      service: ce-workspace
+    ports:
+      - 29619:9619
+
+  factory-workspace:
+    extends:
+      file: compose.yml
+      service: factory-workspace
+    ports:
+      - 35000:5000
+      - 30080:80
+      - 30443:443
+
+  frontend-workspace:
+    extends:
+      file: compose.yml
+      service: frontend-workspace
+    ports:
+      - 40080:80
+      - 40443:443
+      - 49618:9618
+
+volumes:
+  gwms-dev-local:
+    driver: local
+  gwms-tokens:
+    driver: local
+
+networks:
+  gwms:
+    driver: bridge

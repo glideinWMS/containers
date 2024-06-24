@@ -3,7 +3,6 @@
 
 # IMAGE_NAMESPACE: 'glideinwms'
 # GWMS_PATH: 'gwms-dev-local'
-# TODO: network configuration to be able to interact w/ outside CEs/entries
 
 services:
 
@@ -11,6 +10,8 @@ services:
     container_name: ce-workspace.glideinwms.org
     build:
       context: .
+      cache_from:
+        - ${IMAGE_NAMESPACE-glideinwms}/ce-workspace:latest
       dockerfile: ce-workspace/Dockerfile
     image: ${IMAGE_NAMESPACE-glideinwms}/ce-workspace:latest
     networks:
@@ -18,11 +19,14 @@ services:
     hostname: ce-workspace.glideinwms.org
     tty: true
     stdin_open: true
+    stop_grace_period: 2s
 
   factory-workspace:
     container_name: factory-workspace.glideinwms.org
     build:
       context: .
+      cache_from:
+        - ${IMAGE_NAMESPACE-glideinwms}/factory-workspace:latest
       dockerfile: factory-workspace/Dockerfile
     image: ${IMAGE_NAMESPACE-glideinwms}/factory-workspace:latest
     volumes:
@@ -35,11 +39,14 @@ services:
       - ce-workspace
     tty: true
     stdin_open: true
+    stop_grace_period: 2s
 
   frontend-workspace:
     container_name: frontend-workspace.glideinwms.org
     build:
       context: .
+      cache_from:
+        - ${IMAGE_NAMESPACE-glideinwms}/frontend-workspace:latest
       dockerfile: frontend-workspace/Dockerfile
     image: ${IMAGE_NAMESPACE-glideinwms}/frontend-workspace:latest
     volumes:
@@ -52,6 +59,7 @@ services:
       - factory-workspace
     tty: true
     stdin_open: true
+    stop_grace_period: 2s
 
 volumes:
   gwms-dev-local:

@@ -4,7 +4,7 @@
 # Selecting AlmaLinux 8 as the base OS
 FROM almalinux:8
 MAINTAINER Marco Mambelli "marcom@fnal.gov"
-LABEL name="FNAL Worked Node on EL8 with OSG 3.6 Worker Node Client"
+LABEL name="FNAL Worker Node on EL8 with OSG 3.6 Worker Node Client"
 
 # Setting up the HTCondor Madison repository
 # Technically, HTCondor isn't installed but this has been done
@@ -52,7 +52,7 @@ RUN yum install -y  --enablerepo=powertools  --enablerepo=osg --enablerepo=osg-d
     osg-ca-certs \
     gcc-c++ libstdc++ xrootd-client-libs xrootd-libs xrootd-client-libs gfal2-plugin-xrootd \
     osg-wn-client krb5-workstation strace redhat-lsb-core mesa-libGLU mesa-libGLU-devel libXmu libXmu-devel cvmfs libXScrnSaver libSM-devel libXpm-devel libgfortran glibc.i686 \
-    expat-devel libxml2-devel mysql-libs libtiff libjpeg-turbo openssh-clients openssl-devel tzdata glibc-headers glibc-devel apptainer \
+    expat-devel libxml2-devel mysql-libs libtiff libjpeg-turbo openssh-clients openssl-devel tzdata glibc-headers glibc-devel \
     pcre2 xxhash-libs libzstd libzstd-devel mpich mpich-devel numactl numactl-devel libffi libffi-devel libcurl-devel \
     ftgl gl2ps libGLEW giflib libAfterImage \
     jq htgettoken \
@@ -60,7 +60,8 @@ RUN yum install -y  --enablerepo=powertools  --enablerepo=osg --enablerepo=osg-d
     gsi-openssh-clients myproxy voms-clients-cpp stashcp \
     python3-setuptools python3-future python3-gfal2-util
 
-
+# Installing apptainer 1.2.5 (+requirements) and not 1.3 from EPEL, to be able to use underlay on EL7 nodes
+RUN yum install -y https://github.com/apptainer/apptainer/releases/download/v1.2.5/apptainer-1.2.5-1.x86_64.rpm
 
 # Leaving the default apptainer configuration
 #ADD shared/singularity.conf /etc/singularity/singularity.conf
