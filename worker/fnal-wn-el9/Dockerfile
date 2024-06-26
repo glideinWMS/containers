@@ -41,6 +41,7 @@ RUN yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.n
 #  jq [SBND Mateus F. Carneiro, RITM1235906]
 #  htgettoken [Mu2e, Ray Culbertson, as part of RITM1572512]
 #  bzip2 [Mu2e, Ray Culbertson, as part of RITM2052307]
+#  perl-JSON perl-Archive-Tar perl-IO-Compress [Mu2e, RITM2142780]
 # OSG has only: osg-wn-client redhat-lsb-core singularity
 # removed:  gfal2-plugin-xrootd-2.18.1-2.el7.x86_64, verify why it was added, now in OSG
 # TODO: temporary using osg-development, should be removed after 11/5
@@ -56,7 +57,7 @@ RUN yum install -y --enablerepo=crb --enablerepo=osg \
     expat-devel libxml2-devel mysql-libs libtiff libjpeg-turbo openssh-clients openssl-devel tzdata glibc-headers glibc-devel \
     pcre2 xxhash-libs libzstd libzstd-devel mpich mpich-devel numactl numactl-devel libffi libffi-devel libcurl-devel \
     ftgl gl2ps libGLEW giflib libAfterImage \
-    jq htgettoken bzip2 \
+    jq htgettoken bzip2 perl-JSON perl-Archive-Tar perl-IO-Compress \
     globus-gass-copy-progs globus-proxy-utils globus-xio-udt-driver gfal2-plugin-gridftp gfal2-plugin-srm uberftp \
     gsi-openssh-clients myproxy voms-clients-cpp stashcp \
     python3-setuptools python3-future python3-gfal2-util python-unversioned-command
