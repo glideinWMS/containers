@@ -6,6 +6,14 @@ FROM scientificlinux/sl:7
 MAINTAINER Marco Mambelli "marcom@fnal.gov"
 LABEL name="FNAL Worker Node on SL7 with OSG 3.6 Worker Node Client"
 
+# copy over updated repo files with updated repo URLs after SL7 EOL
+COPY repos/fermilab.repo        /etc/yum.repos.d/fermilab.repo
+COPY repos/repos.repo           /etc/yum.repos.d/repos.repo
+COPY repos/sl7-fastbugs.repo    /etc/yum.repos.d/sl7-fastbugs.repo
+COPY repos/sl7.repo             /etc/yum.repos.d/sl7.repo
+COPY repos/sl7-security.repo    /etc/yum.repos.d/sl7-security.repo
+COPY repos/sl-extras.repo       /etc/yum.repos.d/sl-extras.repo
+
 # Setting up the HTCondor Madison repository
 # Technically, HTCondor isn't installed but this has been done
 # to keep in sync with other Docker file and keep the source of
