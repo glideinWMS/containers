@@ -92,7 +92,7 @@ jobs:
 
       - name: Build and push gwms-workspace
         id: docker_build_gwms_workspace
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           push: true
           platforms: linux/amd64,linux/arm64
@@ -109,7 +109,7 @@ jobs:
 
       - name: Build and push ce-workspace
         id: docker_build_ce_workspace
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           push: true
           platforms: linux/amd64,linux/arm64
@@ -124,7 +124,7 @@ jobs:
 
       - name: Build and push factory-workspace
         id: docker_build_factory_workspace
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           push: true
           platforms: linux/amd64,linux/arm64
@@ -139,7 +139,7 @@ jobs:
 
       - name: Build and push frontend-workspace
         id: docker_build_frontend_workspace
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           push: true
           platforms: linux/amd64,linux/arm64

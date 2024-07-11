@@ -81,7 +81,7 @@ jobs:
 
       - name: Build and push SL6
         id: docker_build_sl6
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           push: true
           context: worker
@@ -90,7 +90,7 @@ jobs:
 
       - name: Build and push SL7 base
         id: docker_build_el7_base
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           push: true
           context: worker
@@ -99,7 +99,7 @@ jobs:
 
       - name: Build and push SL7
         id: docker_build_el7
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           push: true
           context: worker
@@ -108,7 +108,7 @@ jobs:
 
       - name: Build and push SL7 dev
         id: docker_build_el7_dev
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           push: true
           context: worker
@@ -117,7 +117,7 @@ jobs:
 
       - name: Build and push EL8
         id: docker_build_el8
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           push: true
           context: worker
@@ -126,7 +126,7 @@ jobs:
 
       - name: Build and push EL9
         id: docker_build_el9
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           push: true
           context: worker
@@ -137,7 +137,7 @@ jobs:
         id: docker_build_sl6_osg35
         continue-on-error: true
         if: ${{ env.OSG_VERISON }} == 'osg35'
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           push: true
           context: worker
