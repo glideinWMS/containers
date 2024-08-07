@@ -93,6 +93,7 @@
          <monitorgroups>
          </monitorgroups>
       </entry>
+      <!--
       <entry name="el7ce-workspace.glideinwms.org" enabled="False" gatekeeper="el7ce-workspace.glideinwms.org el7ce-workspace.glideinwms.org:9619" gridtype="condor" verbosity="std" work_dir="AUTO" trust_domain="grid" auth_method="scitoken">
          <config>
             <max_jobs>
@@ -125,14 +126,17 @@
          <monitorgroups>
          </monitorgroups>
       </entry>
+      -->
    </entries>
    <condor_tarballs>
       <condor_tarball arch="default" os="default" version="default" base_dir="/var/lib/gwms-factory/condor/condor-10.6.0-1-[ARCH]_AlmaLinux9-stripped"/>
       <condor_tarball arch="[ARCH]"  os="rhel9"   version="default" base_dir="/var/lib/gwms-factory/condor/condor-10.6.0-1-[ARCH]_AlmaLinux9-stripped"/>
       <condor_tarball arch="[ARCH]"  os="rhel9"   version="10.6.0"  base_dir="/var/lib/gwms-factory/condor/condor-10.6.0-1-[ARCH]_AlmaLinux9-stripped"/>
-      <!-- WARNING: Using the tar file to avoid tar building and ldd use incompatible with aarch64 -->
-      <condor_tarball arch="x86_64"  os="rhel7"   version="default" tar_file="/var/lib/gwms-factory/condor/condor-9.0.18-x86_64_CentOS7-stripped.tar.gz"/>
-      <condor_tarball arch="x86_64"  os="rhel7"   version="9.0.18"  tar_file="/var/lib/gwms-factory/condor/condor-9.0.18-x86_64_CentOS7-stripped.tar.gz"/>
+      <!-- Uncomment the following lines to use enable HTCondor 9.0.18 for x86_64 RHEL7. WARNING: Incompatible with aarch64 -->
+      <!-- 
+      <condor_tarball arch="x86_64"  os="rhel7"   version="default" base_dir="/var/lib/gwms-factory/condor/condor-9.0.18-1-x86_64_CentOS7-stripped"/>
+      <condor_tarball arch="x86_64"  os="rhel7"   version="9.0.18"  base_dir="/var/lib/gwms-factory/condor/condor-9.0.18-1-x86_64_CentOS7-stripped"/>
+      -->
    </condor_tarballs>
    <files>
    </files>
