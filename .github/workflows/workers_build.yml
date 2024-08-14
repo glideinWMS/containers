@@ -12,6 +12,9 @@
 #  label is used as Docker Hub label instead of "latest"
 #  if date_tag id true a date tag is added to the Docker Hub label (+%Y%m%d-%H%M)
 # -X POST is also optional
+# You can use also the gh cli:
+# jq -n '{"event_type":"worker-build", "client_payload": {"label":"latest", "date_tag":true}}' |  \
+#  gh api repos/glideinwms/containers/dispatches --input -
 #
 # This workflow builds FNAL worker nodes images each time there is a change in the main branch
 # and by default tags them as ":devel", the unstable/testing images. To trigger a build tagged
@@ -44,12 +47,19 @@ on:
 env:
   DH_LABEL: devel
   OSG_VERSION: NO
+  DBG_INFO: Start
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        
+      - name: set debug info
+        id: set_debug
+        shell: bash
+        run: |
+          echo "DBG_INFO=${DBG_INFO}GH_REF${GITHUB_REF##*/},PdDate${{ github.event.client_payload.date_tag }},InDate${{ inputs.date_tag }}," >> $GITHUB_ENV
 
       - name: set label branch
         id: setlabel_branch
@@ -86,6 +96,17 @@ jobs:
         continue-on-error: true
         if: ${{ github.event.client_payload.date_tag }} || ${{ inputs.date_tag }}
         run: |
+          toadd=DateRun
+          if [[ ${{ github.event.client_payload.date_tag }} || ${{ inputs.date_tag }} ]]; then
+            toadd="$toadd,DateTrue"
+          fi
+          if [[ ${{ github.event.client_payload.date_tag }} = true ]]; then
+            toadd="$toadd,DatePdTrue"
+          fi
+          if [[ ${{ inputs.date_tag }} = true ]]; then
+            toadd="$toadd,DateInTrue"
+          fi
+          echo "DBG_INFO=${DBG_INFO}$toadd," >> $GITHUB_ENV
           echo "DH_LABEL=$DH_LABEL-$(date +%Y%m%d-%H%M)" >> $GITHUB_ENV
 
       - name: Set up Docker Buildx
