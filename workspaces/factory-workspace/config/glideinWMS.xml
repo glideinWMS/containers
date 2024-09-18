@@ -20,7 +20,7 @@
          </frontend>
          <frontend name="decisionengine_service" identity="decisionengine_service@factory-workspace.glideinwms.org">
             <security_classes>
-               <security_class name="frontend" username="decisionengine"/>
+               <security_class name="decisionengine" username="decisionengine"/>
             </security_classes>
          </frontend>
       </frontends>
