@@ -40,7 +40,10 @@ RUN yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.n
 
 RUN yum install -y yum-conf-extras yum-conf-context-fermilab ;\
     sed -i -E '/scientificlinux.org\/linux\/scientific\/obsolete\//!s;scientificlinux.org/linux/scientific/;&obsolete/;' /etc/yum.repos.d/sl-extras.repo ;\
-    sed -i -E '/scientificlinux.org\/linux\/scientific\/obsolete\//!s;scientificlinux.org/linux/scientific/;&obsolete/;' /etc/yum.repos.d/fermilab*.repo ;\
+    sed -i -E '/scientificlinux.org\/linux\/scientific\/obsolete\//!s;scientificlinux.org/linux/scientific/;&obsolete/;' /etc/yum.repos.d/fermilab*.repo
+
+# Install latest version of htgettoken package for SL7
+RUN yum install -y https://koji.osg-htc.org/kojifiles/packages/htgettoken/1.21/1.osg36.el7/x86_64/htgettoken-1.21-1.osg36.el7.x86_64.rpm ;\
     yum clean all
 
 # Default entry point
