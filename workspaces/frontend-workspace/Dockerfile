@@ -44,9 +44,9 @@ RUN rm -f /etc/condor/config.d/00-minicondor
 RUN rm -rf /var/cache/yum/* /var/cache/dnf/* /root/.cache/pip/*
 
 # Deploy utility scripts
-COPY shared/scripts /root/scripts
-COPY frontend-workspace/scripts/* /root/scripts/
-RUN ln -s /root/scripts/* /usr/local/bin
+COPY shared/scripts /opt/scripts
+COPY frontend-workspace/scripts/* /opt/scripts/
+RUN ln -s /opt/scripts/* /usr/local/bin
 
 # Deploy GlideinWMS Frontend and HTCondor configuration
 COPY frontend-workspace/config/frontend.xml /etc/gwms-frontend/frontend.xml

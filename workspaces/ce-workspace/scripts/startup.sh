@@ -5,7 +5,7 @@
 
 GWMS_DIR=/opt/gwms
 
-bash /root/scripts/create-host-certificate.sh -d "$GWMS_DIR"/secrets
+bash /opt/scripts/create-host-certificate.sh -d "$GWMS_DIR"/secrets
 
 systemctl start condor
 systemctl start condor-ce

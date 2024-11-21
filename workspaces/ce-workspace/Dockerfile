@@ -40,9 +40,9 @@ RUN dnf -y install htcondor-ce-condor
 RUN rm -rf /var/cache/yum/* /var/cache/dnf/* /root/.cache/pip/*
 
 # Deploy utility scripts
-COPY ce-workspace/scripts /root/scripts
-COPY shared/scripts/create-host-certificate.sh /root/scripts/
-RUN ln -s /root/scripts/* /usr/local/bin
+COPY ce-workspace/scripts /opt/scripts
+COPY shared/scripts/create-host-certificate.sh /opt/scripts/
+RUN ln -s /opt/scripts/* /usr/local/bin
 
 # Deploy HTCondor-CE configuration
 COPY ce-workspace/config/10-local.conf /etc/condor/config.d/10-local.conf

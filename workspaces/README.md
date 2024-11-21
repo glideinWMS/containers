@@ -75,11 +75,11 @@ Other useful commands:
 ```bash
 podman ps -a
 podman images
-podman exec -it ce-workspace.glideinwms.org /root/scripts/startup.sh
-podman exec -it factory-workspace.glideinwms.org /root/scripts/startup.sh
-podman exec -it frontend-workspace.glideinwms.org /root/scripts/startup.sh
+podman exec -it ce-workspace.glideinwms.org /opt/scripts/startup.sh
+podman exec -it factory-workspace.glideinwms.org /opt/scripts/startup.sh
+podman exec -it frontend-workspace.glideinwms.org /opt/scripts/startup.sh
 # Remember to authenticate at the URL to validate the SciToken! 
-podman exec -it frontend-workspace.glideinwms.org /root/scripts/run-test.sh
+podman exec -it frontend-workspace.glideinwms.org /opt/scripts/run-test.sh
 
 podman exec -it ce-workspace.glideinwms.org /bin/bash
 podman exec -it factory-workspace.glideinwms.org /bin/bash

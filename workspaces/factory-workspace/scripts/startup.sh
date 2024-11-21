@@ -43,10 +43,10 @@ done
 if $FULL_STARTUP; then
     # Just the first time
     [[ -n "$VERBOSE" ]] && echo "Full startup" || true
-    bash /root/scripts/create-host-certificate.sh -d "$GWMS_DIR"/secrets
+    bash /opt/scripts/create-host-certificate.sh -d "$GWMS_DIR"/secrets
     # shellcheck disable=SC2086   # Options are unquoted to allow globbing
-    $DO_LINK_GIT && bash /root/scripts/link-git.sh -a -d "$GWMS_DIR" $GWMS_REPO $GWMS_REPO_REF || true
-    bash /root/scripts/create-idtokens.sh -a
+    $DO_LINK_GIT && bash /opt/scripts/link-git.sh -a -d "$GWMS_DIR" $GWMS_REPO $GWMS_REPO_REF || true
+    bash /opt/scripts/create-idtokens.sh -a
     systemctl start httpd
     systemctl start condor
 else
@@ -54,7 +54,7 @@ else
     [[ -n "$VERBOSE" ]] && echo "Refresh only" || true
     systemctl stop gwms-factory
     # shellcheck disable=SC2086   # Options are unquoted to allow globbing
-    $DO_LINK_GIT && bash /root/scripts/link-git.sh -a -d "$GWMS_DIR" $GWMS_REPO $GWMS_REPO_REF || true
+    $DO_LINK_GIT && bash /opt/scripts/link-git.sh -a -d "$GWMS_DIR" $GWMS_REPO $GWMS_REPO_REF || true
     systemctl restart condor  # in case the configuration changes
 fi
 # All the times

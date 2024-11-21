@@ -44,9 +44,9 @@ RUN rm -f /etc/condor/config.d/00-minicondor
 RUN rm -rf /var/cache/yum/* /var/cache/dnf/* /root/.cache/pip/*
 
 # Deploy utility scripts
-COPY shared/scripts /root/scripts
-COPY factory-workspace/scripts/* /root/scripts
-RUN ln -s /root/scripts/* /usr/local/bin
+COPY shared/scripts /opt/scripts
+COPY factory-workspace/scripts/* /opt/scripts
+RUN ln -s /opt/scripts/* /usr/local/bin
 
 # Download HTCondor tarballs
 # HTCondor 10.6.0 to test a more recent version on Alma9
