@@ -4,29 +4,18 @@
 # Selecting AlmaLinux 8 as the base OS
 FROM almalinux:8
 MAINTAINER Marco Mambelli "marcom@fnal.gov"
-LABEL name="FNAL Worker Node on EL8 with OSG 3.6 Worker Node Client"
+LABEL name="FNAL Worker Node on EL8 with OSG 23 Worker Node Client"
 
-# Setting up the HTCondor Madison repository
-# Technically, HTCondor isn't installed but this has been done
-# to keep in sync with other Docker file and keep the source of
-# the packages consistent
-# Assigning the repo yum prio of 90
-# Installing wget to help with repo setup
-RUN yum install -y wget sed ;\
-    /usr/bin/wget http://research.cs.wisc.edu/htcondor/yum/repo.d/htcondor-stable-rhel8.repo -O /etc/yum.repos.d/condor.repo ;\
-    /usr/bin/wget http://research.cs.wisc.edu/htcondor/yum/RPM-GPG-KEY-HTCondor -O /etc/pki/rpm-gpg/RPM-GPG-KEY-HTCondor ;\
-    echo "priority=90" >> /etc/yum.repos.d/condor.repo ;\
-    echo "exclude=*.i686" >> /etc/yum.repos.d/condor.repo ;\
-    echo "gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-HTCondor" >> /etc/yum.repos.d/condor.repo
+# Starting OSG 23 the HTCondor Madison repository is in synch with the OSG one so I'm removing it from the container.
+# HTCondor, if needed, will be installed from the OSG repository
 
 # Next setting up EPEL and OSG repositories
 # OSG by default has a YUM  prio of 98
 # Assigning EPEL YUM prio of 99
-RUN yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm ;\
-    yum -y install https://repo.opensciencegrid.org/osg/3.6/osg-3.6-el8-release-latest.rpm \
+RUN yum -y install wget sed https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm ;\
+    yum -y install https://repo.opensciencegrid.org/osg/23-main/osg-23-main-el8-release-latest.rpm \
                    epel-release ;\
-    /bin/sed -i '/^enabled=1/a priority=99' /etc/yum.repos.d/epel.repo ;\
-    echo "exclude=*condor*" >> /etc/yum.repos.d/osg.repo
+    /bin/sed -i '/^enabled=1/a priority=99' /etc/yum.repos.d/epel.repo
 
 # Installing packages
 # Singularity version has been explicitly specified to control upgrades
