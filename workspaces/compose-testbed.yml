@@ -1,0 +1,74 @@
+# SPDX-FileCopyrightText: 2020 Fermi Research Alliance, LLC
+# SPDX-License-Identifier: Apache-2.0
+
+# This compose file deploys a simple test environment with a CE, Factory, and Frontend.
+# The Factory and Frontend containers use the gwms-base image. GlideinWMS is installed with startup-from-rpm.sh.
+
+# IMAGE_NAMESPACE: 'glideinwms'
+# IMAGE_LABEL: 'latest'
+
+services:
+
+  ce-workspace:
+    container_name: testbed-ce-workspace.glideinwms.org
+    build:
+      context: .
+      cache_from:
+        - ${IMAGE_NAMESPACE-glideinwms}/ce-workspace:${IMAGE_LABEL-latest}
+      dockerfile: ce-workspace/Dockerfile
+    image: ${IMAGE_NAMESPACE-glideinwms}/ce-workspace:${IMAGE_LABEL-latest}
+    networks:
+      - gwms
+    hostname: ce-workspace.glideinwms.org
+    tty: true
+    stdin_open: true
+    stop_grace_period: 2s
+
+  factory-workspace:
+    container_name: testbed-factory-workspace.glideinwms.org
+    build:
+      context: .
+      cache_from:
+        - ${IMAGE_NAMESPACE-glideinwms}/testbed-workspace:${IMAGE_LABEL-latest}
+      dockerfile: testbed-workspace/Dockerfile
+    image: ${IMAGE_NAMESPACE-glideinwms}/testbed-workspace:${IMAGE_LABEL-latest}
+    volumes:
+      - gwms-tokens:/var/lib/gwms-factory/.condor/tokens.d
+    networks:
+      - gwms
+    hostname: factory-workspace.glideinwms.org
+    depends_on:
+      - ce-workspace
+    tty: true
+    stdin_open: true
+    stop_grace_period: 2s
+
+  frontend-workspace:
+    container_name: testbed-frontend-workspace.glideinwms.org
+    build:
+      context: .
+      cache_from:
+        - ${IMAGE_NAMESPACE-glideinwms}/testbed-workspace:${IMAGE_LABEL-latest}
+      dockerfile: testbed-workspace/Dockerfile
+    image: ${IMAGE_NAMESPACE-glideinwms}/testbed-workspace:${IMAGE_LABEL-latest}
+    volumes:
+      - gwms-tokens:/var/lib/gwms-frontend/.condor/tokens.d
+    networks:
+      - gwms
+    hostname: frontend-workspace.glideinwms.org
+    depends_on:
+      - ce-workspace
+    tty: true
+    stdin_open: true
+    stop_grace_period: 2s
+
+
+volumes:
+
+  gwms-tokens:
+    driver: local
+
+networks:
+
+  gwms:
+    driver: bridge
