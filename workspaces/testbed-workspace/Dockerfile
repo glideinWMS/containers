@@ -30,7 +30,7 @@ LABEL name="Testbed workspace with EL9 and utility scripts" \
 RUN echo "Building GWMS Testbed image ($BUILD_SHA/$BUILD_DATE) on $BUILDPLATFORM, for $TARGETPLATFORM"
 
 # Installing some base packages, the CRB repo, and the EPEL (epel-release)
-RUN dnf install -y epel-release yum-utils python3 wget sed git jq vim zsh sudo psmisc bind-utils mlocate && \
+RUN dnf install -y epel-release yum-utils sed wget && \
     dnf config-manager --set-enabled crb && \
     /bin/sed -i '/^enabled=1/a priority=99' /etc/yum.repos.d/epel.repo
 
@@ -39,14 +39,13 @@ RUN dnf install -y cronie supervisor initscripts ;\
     /usr/bin/wget https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/master/files/docker/systemctl3.py -O /usr/local/bin/systemctl ;\
     /usr/bin/chmod +x /usr/local/bin/systemctl
 
-# Deploy GWMS aliases
-RUN /usr/bin/wget -O ~/.bash_aliases https://raw.githubusercontent.com/glideinWMS/dev-tools/master/.bash_aliases && \
-    . ~/.bash_aliases || true
+# htgettoken needs the OSG repo
+# Installing htgettoken
+# RUN dnf -y install htgettoken
 
-# Installing htgettoken from source
-RUN dnf -y install krb5-devel python3-devel gcc;\
-    git clone https://github.com/fermitools/htgettoken.git /opt/htgettoken && \
-    pip install /opt/htgettoken/
+# Consider the following for FNAL kinit/kx509/...
+# krb5-workstation yum-conf-context-fermilab fermilab-util_kx509 fermilab-conf_kerberos
+
 
 # This must be after all dnf/yum and pip commands
 # Cleaning YUM and DNF all caches (including disabled repos) and pip caches to reduce size of image

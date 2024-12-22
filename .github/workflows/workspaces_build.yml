@@ -208,3 +208,21 @@ jobs:
             BUILD_REF=${{env.GITHUB_REF}}
             BUILD_DATE=${{env.BUILD_DATE}}
             GWMS_VERSION=${{env.DH_PREFIX}}${{env.DH_LABEL}}
+
+      - name: Build and push testbed-workspace
+        id: docker_build_testbed_workspace
+        continue-on-error: true
+        if: ${{ ! inputs.sl7_build }}
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          platforms: ${{env.DH_PLATFORMS}}
+          context: workspaces
+          file: workspaces/testbed-workspace/Dockerfile
+          tags: glideinwms/testbed-workspace:${{env.DH_PREFIX}}${{env.DH_LABEL}}
+          build-args: |
+            BUILD_SHA=${{env.GITHUB_SHA}}
+            BUILD_HASH=${{env.GITHUB_HASH}}
+            BUILD_REF=${{env.GITHUB_REF}}
+            BUILD_DATE=${{env.BUILD_DATE}}
+            GWMS_VERSION=${{env.DH_PREFIX}}${{env.DH_LABEL}}
