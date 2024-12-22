@@ -6,6 +6,7 @@
 
 # IMAGE_NAMESPACE: 'glideinwms'
 # IMAGE_LABEL: 'latest'
+# GWMS_PATH: 'gwms-dev-local'
 
 services:
 
@@ -17,6 +18,8 @@ services:
         - ${IMAGE_NAMESPACE-glideinwms}/ce-workspace:${IMAGE_LABEL-latest}
       dockerfile: ce-workspace/Dockerfile
     image: ${IMAGE_NAMESPACE-glideinwms}/ce-workspace:${IMAGE_LABEL-latest}
+    volumes:
+      - ${GWMS_PATH-gwms-dev-local}:/opt/gwms
     networks:
       - gwms
     hostname: ce-workspace.glideinwms.org
@@ -34,6 +37,7 @@ services:
     image: ${IMAGE_NAMESPACE-glideinwms}/testbed-workspace:${IMAGE_LABEL-latest}
     volumes:
       - gwms-tokens:/var/lib/gwms-factory/.condor/tokens.d
+      - ${GWMS_PATH-gwms-dev-local}:/opt/gwms
     networks:
       - gwms
     hostname: factory-workspace.glideinwms.org
@@ -53,6 +57,7 @@ services:
     image: ${IMAGE_NAMESPACE-glideinwms}/testbed-workspace:${IMAGE_LABEL-latest}
     volumes:
       - gwms-tokens:/var/lib/gwms-frontend/.condor/tokens.d
+      - ${GWMS_PATH-gwms-dev-local}:/opt/gwms
     networks:
       - gwms
     hostname: frontend-workspace.glideinwms.org
@@ -64,11 +69,11 @@ services:
 
 
 volumes:
-
+  gwms-dev-local:
+    driver: local
   gwms-tokens:
     driver: local
 
 networks:
-
   gwms:
     driver: bridge

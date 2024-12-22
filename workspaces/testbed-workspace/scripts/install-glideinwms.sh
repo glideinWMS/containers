@@ -13,6 +13,7 @@ OSG_VERSION=24
 OSG_REPO=
 GWMS_REPO=osg-development
 GWMS_SW=
+GWMS_LOGSERVER=false
 CHECK_ONLY=false
 GWMS_USE_BUILD=false
 # Outside mounted directory with shared files
@@ -27,6 +28,7 @@ Install the EL9 version of the specified GlideinWMS software
 --osg-version OSG_VERSION   Set the OSG version, e.g. 24 (default), 23
 --factory                   Install the Factory
 --frontend                  Install the Frontend
+--logserver                 Add a Log server to the Factory (only if installing the Factory)
 --check-only                Only print the available RPMs (no install and set up)
 --use-build                 Use the build-workspace container as YUM repo
 You cannot set both --factory and --frontend. If none is set the script tries to guess from the hostname
@@ -60,6 +62,9 @@ while [ -n "$1" ];do
         --frontend)
             GWMS_SW=vofrontend
             ;;
+        --logserver)
+            GWMS_LOGSERVER=true
+            ;;
         *)
             echo "Parameter '$1' is not supported."
             help
@@ -86,7 +91,10 @@ if [[ -z "$OSG_REPO" ]]; then
 fi
 
 if $GWMS_USE_BUILD; then
-    wget http://build-workspace.glideinwms.org/repo/build.repo -O /etc/yum.repos.d/build.repo
+    # Install and setup the build server YUM repo
+    if [[ ! -f /etc/yum.repos.d/build.repo ]]; then
+        wget http://build-workspace.glideinwms.org/repo/build.repo -O /etc/yum.repos.d/build.repo
+    fi
     GWMS_REPO="gwms-build"
 fi
 
@@ -111,6 +119,10 @@ install_sw(){
     if [[ "$GWMS_SW" = vofrontend ]]; then
         # sudo is required by the run-test script
         dnf install -y sudo
+    fi
+    # For now the example logserver is supported on the Factory
+    if [[ "$GWMS_LOGSERVER" && "$GWMS_SW" = factory ]]; then
+        dnf install -y --enablerepo="$GWMS_REPO" glideinwms-logserver
     fi
 }
 
@@ -166,8 +178,8 @@ start_common(){
 start_logserver(){
     # Will start only if installed
     if [[ -f /etc/php-fpm.conf ]]; then
-        systemctl start start php-fpm
         echo "systemd_interval = 0" >> /etc/php-fpm.conf
+        systemctl start php-fpm
         if [[ -f /var/lib/gwms-logserver/composer.json ]]; then
             pushd /var/lib/gwms-logserver/
             if ! composer install; then

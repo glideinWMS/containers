@@ -15,6 +15,8 @@ services:
         - ${IMAGE_NAMESPACE-glideinwms}/ce-workspace:${IMAGE_LABEL-latest}
       dockerfile: ce-workspace/Dockerfile
     image: ${IMAGE_NAMESPACE-glideinwms}/ce-workspace:${IMAGE_LABEL-latest}
+    volumes:
+      - ${GWMS_PATH-gwms-dev-local}:/opt/gwms
     networks:
       - gwms
     hostname: ce-workspace.glideinwms.org

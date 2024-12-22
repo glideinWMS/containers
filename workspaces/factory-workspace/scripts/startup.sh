@@ -52,9 +52,9 @@ if $FULL_STARTUP; then
     systemctl start httpd
     # PHP may be used by the logserver
     if [[ -f /etc/php-fpm.conf ]]; then
-        systemctl start start php-fpm
         # the container systemd imitation cannot receive messages
         echo "systemd_interval = 0" >> /etc/php-fpm.conf
+        systemctl start php-fpm
         if [[ -f /var/lib/gwms-logserver/composer.json ]]; then
             pushd /var/lib/gwms-logserver/
             if ! composer install; then
