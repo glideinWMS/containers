@@ -14,7 +14,7 @@ RUN yum -y install asciidoc autoconf automake bzip2-devel fontconfig-devel freet
     python3-devel python-six emacs vim nano cvs htop curl procmail \
     autogen bison cmake3 gunzip hwloc-devel patchelf ninja-build csh tcsh zsh \
     java-latest-openjdk-devel \
-    mesa-dri-drivers
+    mesa-dri-drivers ddd
 
 # Packages requiring additional repos
 RUN curl -sSf 'https://packagecloud.io/install/repositories/github/git-lfs/config_file.repo?os=centos&dist=7&source=script' > /etc/yum.repos.d/github_git-lfs.repo
