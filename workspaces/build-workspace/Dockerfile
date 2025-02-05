@@ -39,9 +39,9 @@ RUN echo "Building the release building dev image ($BUILD_SHA/$BUILD_DATE) on $B
 # Install Fermilab repo and packages, RPM build and OSG build packages
 RUN yum -y install https://linux-mirrors.fnal.gov/linux/fermilab/almalinux/9/yum-conf-fermilab.rpm && \
     yum -y install krb5-workstation fermilab-conf_kerberos fermilab-util_kx509 svn rpm-build && \
-    yum -y --enablerepo=osg-internal install osg-build-deps && \
+    yum -y --enablerepo=osg-internal-development install osg-build-deps && \
     pip install pyyaml tox && \
-    pip install 'git+https://github.com/opensciencegrid/osg-build' 
+    pip install 'git+https://github.com/opensciencegrid/osg-build'
 
 # Kerberos cache does not work properly in containers, using files
 COPY build-workspace/config/0_file_ccache /etc/krb5.conf.d/0_file_ccache
