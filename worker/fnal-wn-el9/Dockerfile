@@ -31,6 +31,7 @@ RUN yum -y install wget sed https://dl.fedoraproject.org/pub/epel/epel-release-l
 #  bzip2 [Mu2e, Ray Culbertson, as part of RITM2052307]
 #  perl-JSON perl-Archive-Tar perl-IO-Compress [Mu2e, RITM2142780]
 #  perl-autodie perl-English [Mu2e, RITM2191006]
+#  bind-utils [Steve Timm RITM2399939]
 # OSG has only: osg-wn-client redhat-lsb-core singularity
 # removed:  gfal2-plugin-xrootd-2.18.1-2.el7.x86_64, verify why it was added, now in OSG
 # TODO: temporary using osg-development, should be removed after 11/5
@@ -49,7 +50,8 @@ RUN yum install -y --enablerepo=crb --enablerepo=osg \
     jq htgettoken bzip2 perl-JSON perl-Archive-Tar perl-IO-Compress perl-File-Copy perl-File-Copy-Recursive perl-File-Copy-Recursive-Reduced perl-autodie perl-English \
     globus-gass-copy-progs globus-proxy-utils globus-xio-udt-driver gfal2-plugin-gridftp gfal2-plugin-srm uberftp \
     gsi-openssh-clients myproxy voms-clients-cpp stashcp \
-    python3-setuptools python3-future python3-gfal2-util python-unversioned-command
+    python3-setuptools python3-future python3-gfal2-util python-unversioned-command \
+    bind-utils
 
 # Installing apptainer 1.2.5 (+requirements) and not 1.3 from EPEL, to be able to use underlay on EL7 nodes
 RUN dnf install -y https://github.com/apptainer/apptainer/releases/download/v1.2.5/apptainer-1.2.5-1.x86_64.rpm

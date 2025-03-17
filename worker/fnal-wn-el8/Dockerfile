@@ -28,6 +28,7 @@ RUN yum -y install wget sed https://dl.fedoraproject.org/pub/epel/epel-release-l
 #  ftgl gl2ps libGLEW giflib libAfterImage [LArSoft v09_16_00, V. Di Benedetto, RITM1085514]
 #  jq [SBND Mateus F. Carneiro, RITM1235906]
 #  htgettoken [Mu2e, Ray Culbertson, as part of RITM1572512]
+#  bind-utils [Steve Timm RITM2399939]
 # OSG has only: osg-wn-client redhat-lsb-core singularity
 # removed:  gfal2-plugin-xrootd-2.18.1-2.el7.x86_64, verify why it was added, now in OSG
 # TODO: temporary using osg-development, should be removed after 11/5
@@ -47,7 +48,8 @@ RUN yum install -y  --enablerepo=powertools  --enablerepo=osg --enablerepo=osg-d
     jq htgettoken \
     globus-gass-copy-progs globus-proxy-utils globus-xio-udt-driver gfal2-plugin-gridftp gfal2-plugin-srm uberftp \
     gsi-openssh-clients myproxy voms-clients-cpp stashcp \
-    python3-setuptools python3-future python3-gfal2-util
+    python3-setuptools python3-future python3-gfal2-util \
+    bind-utils
 
 # Installing apptainer 1.2.5 (+requirements) and not 1.3 from EPEL, to be able to use underlay on EL7 nodes
 RUN yum install -y https://github.com/apptainer/apptainer/releases/download/v1.2.5/apptainer-1.2.5-1.x86_64.rpm

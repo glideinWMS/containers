@@ -20,6 +20,7 @@ LABEL name="FNAL Worker Node on SL7 with OSG 3.6 Worker Node Client"
 #  htgettoken [Mu2e, Ray Culbertson, as part of RITM1572512]
 #  pcre2-devel [Mu2e, Ray Culbertson, RITM1593912]
 #  perl-JSON perl-Archive-Tar perl-IO-Compress [Mu2e, RITM2002927]
+#  bind-utils [Steve Timm RITM2399939]
 # OSG has only: osg-wn-client redhat-lsb-core singularity
 # removed:  gfal2-plugin-xrootd-2.18.1-2.el7.x86_64, verify why it was added, now also in OSG, it is a dependency of osg-wn-client
 # TODO: temporary using osg-development, should be removed after 11/5
@@ -34,7 +35,8 @@ RUN yum install -y \
     jq \
     globus-gass-copy-progs globus-proxy-utils globus-xio-udt-driver gfal2-plugin-gridftp gfal2-plugin-srm uberftp \
     fts-client gsi-openssh-clients myproxy voms-clients-cpp stashcp \
-    python-setuptools python2-future python-backports-ssl_match_hostname python2-gfal2-util && \
+    python-setuptools python2-future python-backports-ssl_match_hostname python2-gfal2-util \
+    bind-utils && \
     chmod ugo+rx /usr/bin/ssh-agent
 
 # Installing apptainer 1.2.5 (+requirements) and not 1.3 from EPEL, to be able to use underlay on EL7 nodes
