@@ -6,6 +6,8 @@ FROM fermilab/fnal-wn-sl7:latest
 MAINTAINER WMS Team "glideinwms-support@fnal.gov"
 LABEL description="SL7 development container"
 
+RUN yum reinstall -y util-linux
+
 RUN yum -y install asciidoc autoconf automake bzip2-devel fontconfig-devel freetype-devel ftgl-devel gdbm-devel giflib-devel gl2ps-devel glew-devel glibc-devel.i686 \
     harfbuzz-devel libAfterImage-devel libXft-devel libXi-devel libXrender-devel libgcc.i686 libjpeg-turbo-devel libpng-devel libstdc++-devel.i686 libtool \
     libuuid-devel libxkbcommon-devel libxkbcommon-x11-devel lz4-devel ncurses-devel openldap-devel perl-DBD-SQLite perl-ExtUtils-MakeMaker perl-Module-Pluggable readline-devel \
