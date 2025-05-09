@@ -6,6 +6,7 @@ FROM fermilab/fnal-wn-sl7:latest
 MAINTAINER WMS Team "glideinwms-support@fnal.gov"
 LABEL description="SL7 development container"
 
+# Reinstall needed to restore 'script' utility removed in base image (RITM2435017)
 RUN yum reinstall -y util-linux
 
 RUN yum -y install asciidoc autoconf automake bzip2-devel fontconfig-devel freetype-devel ftgl-devel gdbm-devel giflib-devel gl2ps-devel glew-devel glibc-devel.i686 \
