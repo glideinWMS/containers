@@ -42,9 +42,10 @@ RUN yum install -y yum-conf-extras yum-conf-context-fermilab ;\
     sed -i -E '/scientificlinux.org\/linux\/scientific\/obsolete\//!s;scientificlinux.org/linux/scientific/;&obsolete/;' /etc/yum.repos.d/sl-extras.repo ;\
     sed -i -E '/scientificlinux.org\/linux\/scientific\/obsolete\//!s;scientificlinux.org/linux/scientific/;&obsolete/;' /etc/yum.repos.d/fermilab*.repo
 
-# Install latest version of htgettoken package for SL7
+# Install latest version of htgettoken package for SL7 and update htdecodetoken from GH
 RUN yum install -y https://koji.osg-htc.org/kojifiles/packages/htgettoken/1.21/1.osg36.el7/x86_64/htgettoken-1.21-1.osg36.el7.x86_64.rpm ;\
-    yum clean all
+    yum clean all ;\
+    wget https://raw.githubusercontent.com/fermitools/htgettoken/refs/tags/v2.4/htdecodetoken -O /usr/bin/htdecodetoken
 
 # Default entry point
 CMD ["/bin/bash"]
