@@ -43,10 +43,6 @@ RUN yum install -y \
 RUN yum install -y fuse2fs && \
     yum install -y https://github.com/apptainer/apptainer/releases/download/v1.2.5/apptainer-1.2.5-1.x86_64.rpm
 
-# install htgettoken from osg-development, this repo could have more updated versions that can be useful to have during initial token deployment phase
-RUN yum install -y --enablerepo=osg-development \
-    htgettoken
-
 # Leaving the default apptainer configuration
 # ADD shared/singularity.conf /etc/singularity/singularity.conf
 
