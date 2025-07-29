@@ -35,12 +35,13 @@ RUN yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.n
     # exclude condor/htcondor packages from the OSG repo to get the ones form the condor repo
     sed -i 's/\[osg\]$/&\nexclude=condor*,htcondor*/' /etc/yum.repos.d/osg.repo
 
-# install yum-conf-extras to enable sl-extras repo and fix the obsolete link
+# install yum-conf-extras to enable sl-extras repo and fix the obsolete link and disable mirrorlists
 # And cleaning caches to reduce size of image
 
 RUN yum install -y yum-conf-extras yum-conf-context-fermilab ;\
     sed -i -E '/scientificlinux.org\/linux\/scientific\/obsolete\//!s;scientificlinux.org/linux/scientific/;&obsolete/;' /etc/yum.repos.d/sl-extras.repo ;\
-    sed -i -E '/scientificlinux.org\/linux\/scientific\/obsolete\//!s;scientificlinux.org/linux/scientific/;&obsolete/;' /etc/yum.repos.d/fermilab*.repo
+    sed -i -E '/scientificlinux.org\/linux\/scientific\/obsolete\//!s;scientificlinux.org/linux/scientific/;&obsolete/;' /etc/yum.repos.d/fermilab*.repo ;\
+    sed -i -E 's/^mirrorlist=/#mirrorlist=/' /etc/yum.repos.d/fermilab*.repo /etc/yum.repos.d/sl7*.repo
 
 # Install latest version of htgettoken package for SL7 and update htdecodetoken from GH
 RUN yum install -y https://koji.osg-htc.org/kojifiles/packages/htgettoken/1.21/1.osg36.el7/x86_64/htgettoken-1.21-1.osg36.el7.x86_64.rpm ;\
