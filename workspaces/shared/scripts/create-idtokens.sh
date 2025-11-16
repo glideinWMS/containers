@@ -36,7 +36,8 @@ done
 
 echo Creating IDTOKENS for host $HOSTNAME ...
 # Without -lifetime, idtokens have no lifetime restrictions (i.e. no expiration)
-if ! condor_store_cred add-pwd -c -p "$HOSTNAME".$RANDOM; then
+# Depending on the consor version `condor_store_cred add-pwd -c -p "$HOSTNAME".$RANDOM` or `condor_store_cred add -c -p "$HOSTNAME".$RANDOM`
+if ! condor_store_cred add -c -p "$HOSTNAME".$RANDOM; then
     echo "WARNING: condor_store_cred failed"
 fi
 [[ -n "$IS_FACTORY" || -n "$IS_FRONTEND" || -n "$IS_DE" ]] || echo "WARNING: This host is not identified as Factory, nor Frontend, nor Decision Engine."
