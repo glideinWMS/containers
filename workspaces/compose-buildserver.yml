@@ -12,7 +12,7 @@ services:
     build:
       context: .
       cache_from:
-        - ${IMAGE_NAMESPACE-glideinwms}/build-workspace:${IMAGE_LABEL-latest}
+        - ${IMAGE_NAMESPACE-glideinwms}/build-workspace
       dockerfile: build-workspace/Dockerfile
     image: ${IMAGE_NAMESPACE-glideinwms}/build-workspace:${IMAGE_LABEL-latest}
     privileged: true

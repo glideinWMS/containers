@@ -14,8 +14,9 @@ services:
     container_name: testbed-ce-workspace.glideinwms.org
     build:
       context: .
+      # cache_from not accepting a tag with podman/buildah
       cache_from:
-        - ${IMAGE_NAMESPACE-glideinwms}/ce-workspace:${IMAGE_LABEL-latest}
+        - ${IMAGE_NAMESPACE-glideinwms}/ce-workspace
       dockerfile: ce-workspace/Dockerfile
     image: ${IMAGE_NAMESPACE-glideinwms}/ce-workspace:${IMAGE_LABEL-latest}
     # To run sshd you need: --cap-add AUDIT_WRITE  --cap-add AUDIT_CONTROL
@@ -46,7 +47,7 @@ services:
     build:
       context: .
       cache_from:
-        - ${IMAGE_NAMESPACE-glideinwms}/testbed-workspace:${IMAGE_LABEL-latest}
+        - ${IMAGE_NAMESPACE-glideinwms}/testbed-workspace
       dockerfile: testbed-workspace/Dockerfile
     image: ${IMAGE_NAMESPACE-glideinwms}/testbed-workspace:${IMAGE_LABEL-latest}
     volumes:
@@ -66,7 +67,7 @@ services:
     build:
       context: .
       cache_from:
-        - ${IMAGE_NAMESPACE-glideinwms}/testbed-workspace:${IMAGE_LABEL-latest}
+        - ${IMAGE_NAMESPACE-glideinwms}/testbed-workspace
       dockerfile: testbed-workspace/Dockerfile
     image: ${IMAGE_NAMESPACE-glideinwms}/testbed-workspace:${IMAGE_LABEL-latest}
     volumes:

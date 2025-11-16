@@ -12,7 +12,7 @@ services:
     build:
       context: .
       cache_from:
-        - ${IMAGE_NAMESPACE-docker.io/glideinwms}/testbed-workspace:${IMAGE_LABEL-latest}
+        - ${IMAGE_NAMESPACE-docker.io/glideinwms}/testbed-workspace
       dockerfile: testbed-workspace/Dockerfile
     image: ${IMAGE_NAMESPACE-docker.io/glideinwms}/testbed-workspace:${IMAGE_LABEL-latest}
     # privileged To allow podman in podman (used for Redis)

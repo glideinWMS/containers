@@ -11,7 +11,7 @@ services:
     build:
       context: .
       cache_from:
-        - ${IMAGE_NAMESPACE-glideinwms}/gwms-workspace:latest
+        - ${IMAGE_NAMESPACE-glideinwms}/gwms-workspace
       dockerfile: gwms-workspace/Dockerfile
     image: ${IMAGE_NAMESPACE-glideinwms}/gwms-workspace:latest
     # TODO: the following seems not to work (error on build) 

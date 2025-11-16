@@ -13,7 +13,8 @@ services:
     build:
       context: .
       cache_from:
-        - ${IMAGE_NAMESPACE-glideinwms}/ce-workspace:${IMAGE_LABEL-latest}
+        # Removing the label from the cache_from, otherwise is failing with buildah (podman)
+        - ${IMAGE_NAMESPACE-glideinwms}/ce-workspace
       dockerfile: ce-workspace/Dockerfile
     image: ${IMAGE_NAMESPACE-glideinwms}/ce-workspace:${IMAGE_LABEL-latest}
     # To run sshd you need: --cap-add AUDIT_WRITE  --cap-add AUDIT_CONTROL
@@ -44,7 +45,7 @@ services:
     build:
       context: .
       cache_from:
-        - ${IMAGE_NAMESPACE-glideinwms}/factory-workspace:${IMAGE_LABEL-latest}
+        - ${IMAGE_NAMESPACE-glideinwms}/factory-workspace
       dockerfile: factory-workspace/Dockerfile
     image: ${IMAGE_NAMESPACE-glideinwms}/factory-workspace:${IMAGE_LABEL-latest}
     volumes:
@@ -64,7 +65,7 @@ services:
     build:
       context: .
       cache_from:
-        - ${IMAGE_NAMESPACE-glideinwms}/frontend-workspace:${IMAGE_LABEL-latest}
+        - ${IMAGE_NAMESPACE-glideinwms}/frontend-workspace
       dockerfile: frontend-workspace/Dockerfile
     image: ${IMAGE_NAMESPACE-glideinwms}/frontend-workspace:${IMAGE_LABEL-latest}
     volumes:
