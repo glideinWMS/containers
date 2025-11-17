@@ -36,9 +36,14 @@ done
 
 echo Creating IDTOKENS for host $HOSTNAME ...
 # Without -lifetime, idtokens have no lifetime restrictions (i.e. no expiration)
-# Depending on the consor version `condor_store_cred add-pwd -c -p "$HOSTNAME".$RANDOM` or `condor_store_cred add -c -p "$HOSTNAME".$RANDOM`
-if ! condor_store_cred add -c -p "$HOSTNAME".$RANDOM; then
-    echo "WARNING: condor_store_cred failed"
+if [[ -f /etc/condor/passwords.d/POOL ]]; then
+    [[ -z "$VERBOSE" ]] || echo "HTCondor POOL password already in /etc/condor/passwords.d/POOL, using the existing one"
+else
+    [[ -z "$VERBOSE" ]] || echo "Creating new HTCondor credential (POOL password)"
+    # Depending on the condor version `condor_store_cred add-pwd -c -p "$HOSTNAME".$RANDOM` or `condor_store_cred add -c -p "$HOSTNAME".$RANDOM`
+    if ! condor_store_cred add -c -p "$HOSTNAME".$RANDOM; then
+        echo "WARNING: condor_store_cred failed"
+    fi
 fi
 [[ -n "$IS_FACTORY" || -n "$IS_FRONTEND" || -n "$IS_DE" ]] || echo "WARNING: This host is not identified as Factory, nor Frontend, nor Decision Engine."
 if [[ -n "$IS_FACTORY" ]]; then

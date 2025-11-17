@@ -23,6 +23,7 @@ HTC_VERSION=24.0.8
 GWMS_DIR=/opt/gwms
 ONLY_START=false
 QUIET=true
+VERBOSE_OPTION=
 
 help(){
     cat <<EOF 
@@ -105,6 +106,7 @@ while [ -n "$1" ];do
             ;;
         --verbose)
             QUIET=false
+            VERBOSE_OPTION="-v"
             ;;
         --help)
             help
@@ -281,7 +283,7 @@ configure_de(){
 ### STARTUP ###
 
 start_common(){
-    bash /opt/scripts/create-host-certificate.sh -d "$GWMS_DIR"/secrets
+    bash /opt/scripts/create-host-certificate.sh $VERBOSE_OPTION -d "$GWMS_DIR"/secrets
     systemctl start httpd
     systemctl start condor    
 }
@@ -317,7 +319,7 @@ restart_logserver(){
 }
 
 start_factory(){
-    bash /opt/scripts/create-idtokens.sh -a
+    bash /opt/scripts/create-idtokens.sh -a $VERBOSE_OPTION
     gwms-factory upgrade
     systemctl start gwms-factory
 }
@@ -329,8 +331,8 @@ restart_factory(){
 }
 
 start_frontend(){
-    bash /opt/scripts/create-idtokens.sh -r
-    bash /opt/scripts/create-scitoken.sh -r
+    bash /opt/scripts/create-idtokens.sh -r $VERBOSE_OPTION
+    bash /opt/scripts/create-scitoken.sh -r $VERBOSE_OPTION
     gwms-frontend upgrade
     systemctl start gwms-frontend
 }
@@ -338,14 +340,14 @@ start_frontend(){
 restart_frontend(){
     systemctl stop gwms-frontend
     # Always recreate the scitoken (expires quickly, OK to have a new one)
-    bash /opt/scripts/create-scitoken.sh -r
+    bash /opt/scripts/create-scitoken.sh -r $VERBOSE_OPTION
     gwms-frontend upgrade
     systemctl start gwms-frontend
 }
 
 start_de(){
-    bash /opt/scripts/create-idtokens.sh -e
-    bash /opt/scripts/create-scitoken.sh -e
+    bash /opt/scripts/create-idtokens.sh -e $VERBOSE_OPTION
+    bash /opt/scripts/create-scitoken.sh -e $VERBOSE_OPTION
     systemctl enable postgresql
     systemctl start postgresql
     createdb -U postgres decisionengine
@@ -361,7 +363,7 @@ EOF
 }
 
 restart_de(){
-    bash /opt/scripts/create-scitoken.sh -e
+    bash /opt/scripts/create-scitoken.sh -e $VERBOSE_OPTION
     systemctl restart postgresql
     #createdb -U postgres decisionengine
     # Start Redis
