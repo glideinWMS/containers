@@ -91,6 +91,9 @@
             <attr name="GLIDEIN_CVMFS" const="False" glidein_publish="True" job_publish="False" parameter="True" publish="True" type="string" value="REQUIRED"/>
             <attr name="GLIDEIN_CVMFS_REPOS" const="False" glidein_publish="True" job_publish="False" parameter="True" publish="True" type="string" value="singularity.opensciencegrid.org"/>
             -->
+             <!-- Uncomment the following to enable Glidein logging. glideinwms-logserver must be installed on the Factory host. This change reuires an upgrade, reconfig is not sufficient
+            <attr name="GLIDEIN_LOG_RECIPIENTS_FACTORY" const="False" glidein_publish="True" job_publish="True" parameter="True" publish="True" type="string" value="https://factory-workspace.glideinwms.org/logserver/put.php" />
+            -->
          </attrs>
          <files>
          </files>
