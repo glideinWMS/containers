@@ -36,7 +36,9 @@ if $FULL_STARTUP; then
     bash /opt/scripts/create-host-certificate.sh -d "$GWMS_DIR"/secrets
     # Generate host keys for sshd if they are missing
     [[  -f /etc/ssh/ssh_host_rsa_key ]] || ssh-keygen -A
-    # can check ssh configuration with: sshd -t  
+    # can check ssh configuration with: sshd -t
+    # Add Frontend/DE scitokens support
+    bash /opt/scripts/add-frontend-scitokens.sh
     systemctl start sshd
     systemctl start condor
     systemctl start condor-ce

@@ -3,6 +3,8 @@
 # SPDX-FileCopyrightText: 2020 Fermi Research Alliance, LLC
 # SPDX-License-Identifier: Apache-2.0
 
+# Download and install apptainer and download the small alpine test image
+
 CONTAINERS_DIR=/opt/containers
 
 if ! cd "$CONTAINERS_DIR"; then

@@ -52,6 +52,7 @@ RUN ln -s /opt/scripts/* /usr/local/bin
 COPY ce-workspace/config/10-local.conf /etc/condor/config.d/10-local.conf
 COPY shared/config/99-debug.conf /etc/condor/config.d/99-debug.conf
 COPY ce-workspace/config/10-scitokens.conf /etc/condor-ce/mapfiles.d/10-scitokens.conf
+COPY ce-workspace/config/20-frontend-scitokens.conf /etc/condor-ce/mapfiles.d/20-frontend-scitokens.conf
 COPY ce-workspace/config/99-local.conf /etc/condor-ce/config.d/99-local.conf
 COPY shared/config/99-debug.conf /etc/condor-ce/config.d/99-debug.conf
 RUN rm -f /etc/condor/config.d/00-minicondor
@@ -61,9 +62,10 @@ RUN mkdir -p /opt/containers/apptainer && cd /opt/containers/ && \
     /opt/scripts/local-container.sh || echo "Need to post-install local container"
 # Added safeguard to allow late container installation
 
-# Add fermilab and osg (allows for Google CA in CILogon) users. Add separate BOSCO user
+# Add fermilab and osg (allows for Google CA in CILogon) users. gwms is for Workspace scitokens. Add separate BOSCO user
 RUN useradd fermilab ;\
     useradd osg ;\
+    useradd gwms ;\
     useradd bosco
 
 # Default entry point
