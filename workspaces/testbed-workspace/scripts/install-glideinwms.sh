@@ -13,6 +13,7 @@ OSG_VERSION=24
 DE_REPO=
 OSG_REPO=
 GWMS_REPO=osg-development
+GWMS_VERSION=
 GWMS_SW=
 GWMS_SCITOKEN_KEY=false
 GWMS_LOGSERVER=false
@@ -33,6 +34,7 @@ Install the EL9 version of the specified GlideinWMS software (Factory, Frontend 
 --help                      Print this
 --osg-repo OSG_REPO         Set the repository for the OSG osg-ca-certs, e.g. osg-development, osg (defaults to GWMS_REPO)
 --gwms-repo GWMS_REPO       Set the GlideinWMS repository, e.g. osg-development (default), osg, upcoming-development
+--gwms-version GWMS_VERSION Set the GlideinWMS RPM version, e.g. 3.10.17, or 3.11.3-3
 --de-repo GWMS_REPO         Set the Decision Engine repository, e.g. osg-development, osg, upcoming-development (defaults to GWMS_REPO)
 --osg-version OSG_VERSION   Set the OSG version, e.g. 24 (default), 23
 --de                        Install Decision Engine
@@ -76,6 +78,10 @@ while [ -n "$1" ];do
             ;;
         --osg-version)
             OSG_VERSION="$2"
+            shift
+            ;;
+        --gwms-version)
+            GWMS_VERSION="$2"
             shift
             ;;
         --use-build)
@@ -201,7 +207,7 @@ install_sw(){
 
     if [[ "$GWMS_SW" = decisionengine ]]; then
         "$QUIET" || echo "DO Install - DE"
-        dnf install -y --enablerepo="$OSG_REPO" --enablerepo="$DE_REPO" decisionengine-onenode || return 1
+        dnf install -y --enablerepo="$OSG_REPO" --enablerepo="$DE_REPO" decisionengine-onenode${GWMS_VERSION:+-$GWMS_VERSION} || return 1
         decisionengine-install-python || return 2
         # Git is in the package dependencies
         # pip install git+https://github.com/HEPCloud/decisionengine.git@2.0.3
@@ -210,7 +216,7 @@ install_sw(){
     else
         "$QUIET" || echo "DO Install - $GWMS_SW"
         # Install the GlideinWMS Factory/Frontend
-        dnf install -y --enablerepo="$OSG_REPO" --enablerepo="$GWMS_REPO" glideinwms-$GWMS_SW || return 1
+        dnf install -y --enablerepo="$OSG_REPO" --enablerepo="$GWMS_REPO" glideinwms-$GWMS_SW${GWMS_VERSION:+-$GWMS_VERSION} || return 1
     fi
     if [[ "$GWMS_SW" = vofrontend ]]; then
         # sudo is required by the run-test script
@@ -219,7 +225,7 @@ install_sw(){
     # For now the example logserver is supported only on the Factory
     if "$GWMS_LOGSERVER" && [[ "$GWMS_SW" = factory ]]; then
         "$QUIET" || echo "DO Install - logserver"
-        dnf install -y --enablerepo="$OSG_REPO" --enablerepo="$GWMS_REPO" glideinwms-logserver
+        dnf install -y --enablerepo="$OSG_REPO" --enablerepo="$GWMS_REPO" glideinwms-logserver${GWMS_VERSION:+-$GWMS_VERSION}
     fi
 }
 
