@@ -14,6 +14,7 @@ DE_REPO=
 OSG_REPO=
 GWMS_REPO=osg-development
 GWMS_SW=
+GWMS_SCITOKEN_KEY=false
 GWMS_LOGSERVER=false
 CHECK_ONLY=false
 GWMS_USE_CUSTOM_REPO=
@@ -97,6 +98,9 @@ while [ -n "$1" ];do
             ;;
         --frontend)
             GWMS_SW=vofrontend
+            ;;
+        --scitoken-key)
+            GWMS_SCITOKEN_KEY=true
             ;;
         --logserver)
             GWMS_LOGSERVER=true
@@ -264,6 +268,14 @@ configure_frontend(){
     "$QUIET" || echo "DO Configure - frontend"
     GWMS_CONFIG=/etc/gwms-frontend/frontend.xml
     cp /opt/config/frontend/frontend.xml $GWMS_CONFIG
+    if [[ "$(python3 -c 'from glideinwms.lib.credentials import credentials; print(credentials.__file__)')" = *credentials.py ]]; then
+        sed -i 's/plugin="ProxyAll"/plugin="CredentialsBasic"/' $GWMS_CONFIG
+        if $GWMS_SCITOKEN_KEY; then
+            gen_scitoken_config=$(make_scitoken_key -c frontend -p | tr '\n' ' ' | sed -e 's/[\/&]/\\&/g' )
+            cp $GWMS_CONFIG $GWMS_CONFIG.bck
+            sed -i "s|<credential absfname=\"/var/lib/gwms-frontend/.condor/tokens.d/frontend-workspace.glideinwms.org.scitoken[^>]*>|$gen_scitoken_config|" $GWMS_CONFIG
+        fi
+    fi
     chown frontend.frontend $GWMS_CONFIG
     echo Updated Frontend configuration
 }
@@ -275,7 +287,16 @@ configure_de(){
     # Without this the systemctl start was failing and the error was in /var/lib/pgsql/data/log/postgresql-*.log
     mkdir -p /var/run/postgresql
     chown postgres: /var/run/postgresql
-    # Fix Frontend install 
+    # Fix Frontend install
+    GWMS_CONFIG=/etc/gwms-frontend/frontend.xml
+    if [[ "$(python3 -c 'from glideinwms.lib.credentials import credentials; print(credentials.__file__)')" = *credentials.py ]]; then
+        sed -i 's/plugin="ProxyAll"/plugin="CredentialsBasic"/' $GWMS_CONFIG
+        if $GWMS_SCITOKEN_KEY; then
+            gen_scitoken_config=$(make_scitoken_key -c decisionengine -p | tr '\n' ' ' | sed -e 's/[\/&]/\\&/g' )
+            cp $GWMS_CONFIG $GWMS_CONFIG.bck
+            sed -i "s|<credential absfname=\"/var/lib/gwms-frontend/.condor/tokens.d/frontend-workspace.glideinwms.org.scitoken[^>]*>|$gen_scitoken_config|" $GWMS_CONFIG
+        fi
+    fi
     # TODO: to improve in packaging - remove when not needed
     chown -R decisionengine: /etc/gwms-frontend
 }
@@ -332,7 +353,10 @@ restart_factory(){
 
 start_frontend(){
     bash /opt/scripts/create-idtokens.sh -r $VERBOSE_OPTION
-    bash /opt/scripts/create-scitoken.sh -r $VERBOSE_OPTION
+    if ! $GWMS_SCITOKEN_KEY; then
+        # Skip if using self-generated scitokens
+        bash /opt/scripts/create-scitoken.sh -r $VERBOSE_OPTION
+    fi
     gwms-frontend upgrade
     systemctl start gwms-frontend
 }
@@ -340,14 +364,20 @@ start_frontend(){
 restart_frontend(){
     systemctl stop gwms-frontend
     # Always recreate the scitoken (expires quickly, OK to have a new one)
-    bash /opt/scripts/create-scitoken.sh -r $VERBOSE_OPTION
+    if ! $GWMS_SCITOKEN_KEY; then
+        # Skip if using self-generated scitokens
+        bash /opt/scripts/create-scitoken.sh -r $VERBOSE_OPTION
+    fi
     gwms-frontend upgrade
     systemctl start gwms-frontend
 }
 
 start_de(){
     bash /opt/scripts/create-idtokens.sh -e $VERBOSE_OPTION
-    bash /opt/scripts/create-scitoken.sh -e $VERBOSE_OPTION
+    if ! $GWMS_SCITOKEN_KEY; then
+        # Skip if using self-generated scitokens
+        bash /opt/scripts/create-scitoken.sh -e $VERBOSE_OPTION
+    fi
     systemctl enable postgresql
     systemctl start postgresql
     createdb -U postgres decisionengine
@@ -363,7 +393,10 @@ EOF
 }
 
 restart_de(){
-    bash /opt/scripts/create-scitoken.sh -e $VERBOSE_OPTION
+    if ! $GWMS_SCITOKEN_KEY; then
+        # Skip if using self-generated scitokens
+        bash /opt/scripts/create-scitoken.sh -e $VERBOSE_OPTION
+    fi
     systemctl restart postgresql
     #createdb -U postgres decisionengine
     # Start Redis
