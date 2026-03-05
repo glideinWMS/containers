@@ -166,4 +166,13 @@ do
     replace "${i}" "$GWMS_SRC_DIR"/tools "${i}.py"
 done
 
+if [[ -n "$IS_FACTORY" ]]; then
+    for i in \
+    analyze_entries analyze_frontends analyze_queues cat_* entry_*
+    do
+        replace ${i} "$GWMS_SRC_DIR"/factory/tools
+    done
+fi
+
+
 popd >/dev/null
