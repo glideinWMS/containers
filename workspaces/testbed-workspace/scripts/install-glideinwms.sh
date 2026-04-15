@@ -274,7 +274,7 @@ configure_frontend(){
     "$QUIET" || echo "DO Configure - frontend"
     GWMS_CONFIG=/etc/gwms-frontend/frontend.xml
     cp /opt/config/frontend/frontend.xml $GWMS_CONFIG
-    if [[ "$(python3 -c 'from glideinwms.lib.credentials import credentials; print(credentials.__file__)')" = *credentials.py ]]; then
+    if [[ "$(python3 -c 'from glideinwms.lib.credentials import credentials; print(credentials.__file__)' 2>/dev/null)" = *credentials.py ]]; then
         sed -i 's/plugin="ProxyAll"/plugin="CredentialsBasic"/' $GWMS_CONFIG
         if $GWMS_SCITOKEN_KEY; then
             gen_scitoken_config=$(make_scitoken_key -c frontend -p | tr '\n' ' ' | sed -e 's/[\/&]/\\&/g' )

@@ -52,7 +52,7 @@
    <attrs>
       <attr name="ALL_DEBUG" glidein_publish="True" job_publish="True" parameter="True" type="string" value="D_SECURITY,D_FULLDEBUG"/>
       <attr name="GLIDEIN_DEBUG_OUTPUT" glidein_publish="True" job_publish="True" parameter="False" type="string" value="True"/>
-       <!-- Consider also usertrace,nowait,nocleanup as GLIDEIN_DEBUG_OPTIONS -->
+       <!-- Consider also usertrace,nowait,nocleanup,cscripttrace as GLIDEIN_DEBUG_OPTIONS -->
       <attr name="GLIDEIN_DEBUG_OPTIONS" glidein_publish="True" job_publish="True" parameter="False" type="string" value="userjob"/>
       <attr name="GLIDECLIENT_Rank" glidein_publish="False" job_publish="False" parameter="True" type="string" value="1"/>
       <attr name="GLIDEIN_Expose_Grid_Env" glidein_publish="True" job_publish="True" parameter="False" type="string" value="True"/>
