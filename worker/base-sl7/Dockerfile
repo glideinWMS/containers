@@ -33,7 +33,10 @@ RUN yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.n
     # /bin/sed -i '/^enabled=1/a priority=99' /etc/yum.repos.d/epel.repo ;\
     # echo "priority=80" >> /etc/yum.repos.d/osg.repo ;\
     # exclude condor/htcondor packages from the OSG repo to get the ones form the condor repo
-    sed -i 's/\[osg\]$/&\nexclude=condor*,htcondor*/' /etc/yum.repos.d/osg.repo
+    sed -i 's/\[osg\]$/&\nexclude=condor*,htcondor*/' /etc/yum.repos.d/osg.repo ;\
+    # for OSG repo (this is 3.6) use baseurl instead of mirrorlist, the latter have been removed
+    sed -i  -E 's/^mirrorlist=/#mirrorlist=/;s/^#baseurl=/baseurl=/' /etc/yum.repos.d/osg*.repo
+
 
 # install yum-conf-extras to enable sl-extras repo and fix the obsolete link and disable mirrorlists
 # And cleaning caches to reduce size of image
