@@ -295,7 +295,7 @@ configure_de(){
     chown postgres: /var/run/postgresql
     # Fix Frontend install
     GWMS_CONFIG=/etc/gwms-frontend/frontend.xml
-    if [[ "$(python3 -c 'from glideinwms.lib.credentials import credentials; print(credentials.__file__)')" = *credentials.py ]]; then
+    if [[ "$(python3 -c 'from glideinwms.lib.credentials import credentials; print(credentials.__file__)' 2>/dev/null)" = *credentials.py ]]; then
         sed -i 's/plugin="ProxyAll"/plugin="CredentialsBasic"/' $GWMS_CONFIG
         if $GWMS_SCITOKEN_KEY; then
             gen_scitoken_config=$(make_scitoken_key -c decisionengine -p | tr '\n' ' ' | sed -e 's/[\/&]/\\&/g' )
