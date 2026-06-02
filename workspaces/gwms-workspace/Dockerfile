@@ -52,8 +52,11 @@ RUN dnf install -y epel-release wget sed git yum-utils \
 
 # Installing some system management RPMs/sw needed for containers (these are not needed for VMs)
 RUN dnf install -y cronie supervisor initscripts ;\
-    /usr/bin/wget https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/master/files/docker/systemctl3.py -O /usr/local/bin/systemctl ;\
-    /usr/bin/chmod +x /usr/local/bin/systemctl
+    # /usr/bin/wget https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/master/files/docker/systemctl3.py -O /usr/local/bin/systemctl ;\
+    /usr/bin/wget https://raw.githubusercontent.com/mambelli/docker-systemctl-replacement/refs/heads/adding_permission_changes/files/docker/systemctl3.py -O /usr/local/bin/systemctl ;\
+    /usr/bin/wget https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/master/files/docker/journalctl3.py -O /usr/local/bin/journalctl ;\
+    /usr/bin/ln -s /usr/local/bin/systemctl /usr/local/bin/systemctl3.py ;\
+    /usr/bin/chmod +x /usr/local/bin/systemctl /usr/local/bin/journalctl
 
 # Installing some base RPMs (gettext is needed by RELEASE, swig and many devel by jsonnet)
 # Install development tools
