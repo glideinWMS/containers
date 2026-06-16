@@ -391,6 +391,7 @@ start_de(){
     # yum rm iptables-legacy
     # yum install iptables-nft
     podman run --name decisionengine-redis -p 127.0.0.1:6379:6379 -d redis:6 --loglevel warning
+    systemctl start decisionengine
     cat << EOF
 To test with a NOP channel:
 cp /opt/config/decisionengine/test_nop_channel.jsonnet /etc/decisionengine/config.d/
@@ -407,6 +408,7 @@ restart_de(){
     #createdb -U postgres decisionengine
     # Start Redis
     #podman run --name decisionengine-redis -p 127.0.0.1:6379:6379 -d redis:6 --loglevel warning
+    systemctl restart decisionengine
     cat << EOF
 To test with a NOP channel:
 cp /opt/config/decisionengine/test_nop_channel.jsonnet /etc/decisionengine/config.d/
