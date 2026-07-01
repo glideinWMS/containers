@@ -1,29 +1,30 @@
-    #!/bin/bash
+#!/bin/bash
+
+# SPDX-FileCopyrightText: 2020 Fermi Research Alliance, LLC
+# SPDX-License-Identifier: Apache-2.0
+
+SECRETS_DIR=/opt/gwms/secrets
+PASSPHRASE=""
+BOSCOUSER=bosco
+
+loginfo() {
+    [[ -z "$VERBOSE" ]] || echo "$@"
+}
     
-    # SPDX-FileCopyrightText: 2020 Fermi Research Alliance, LLC
-    # SPDX-License-Identifier: Apache-2.0
+help_msg() {
+    cat << EOF
+$0 [options]
+Initialize a ssh key to use for HTCondor remote cluster (BOSCO)
+  -h       print this message
+  -v       verbose mode
+  -f       force key re-creation even if it is already there
+  -d DIR   secrets directory (default: $SECRETS_DIR)
+  -u USER  Remote Cluster (BOSCO) user name (default: $BOSCOUSER)
+  -p PASS  passphrase (default: $PASSPHRASE)
+EOF
+}
     
-    SECRETS_DIR=/opt/gwms/secrets
-    PASSPHRASE=""
-    BOSCOUSER=bosco
-    
-    loginfo() {
-        [[ -z "$VERBOSE" ]] || echo "$@"
-    }
-    
-    help_msg() {
-        cat << EOF
-    $0 [options]
-    Initialize the self-signed GlideinWMS host certificate
-      -h       print this message
-      -v       verbose mode
-      -f       force key re-creation even if it is already there
-      -d DIR   secrets directory (default: $SECRETS_DIR)
-      -u USER  Remote Cluster (BOSCO) user name (default: $BOSCOUSER)
-      -p PASS  passphrase (default: $PASSPHRASE)
-    EOF
-    }
-    
+main() {
     while getopts "hvfd:u:p:" option
     do
       case "${option}"
@@ -44,7 +45,7 @@
     COMMON_NAME="$HOSTNAME"
     VALIDITY_PERIOD=365
     
-    # Copy the CA files if not already in the shared directory
+    # Removing old priv/pub keys if forcing re-creation
     if [[ -f "$KEY_FILE" ]]; then
         if [[ -n "$FORCE" ]]; then
             rm -f "$KEY_FILE" "$PUBKEY_FILE"
@@ -53,7 +54,8 @@
             exit 0
         fi
     fi
-     
+    
+    # Creating ssh keys
     loginfo "Creating Remote Cluster (BOSCO) SSH key"
     mkdir -p "$SECRETS_DIR"
     # Creating RSA key. Change command to change size or type (-b 4096 -t rsa  or -t ed25519).
@@ -83,9 +85,12 @@
     
     loginfo "Making sure the host can accept PubKey"
     cat << EOF > /etc/ssh/sshd_config.d/60-bosco.conf
-    # Policies to allow SSH for HTCondor Remote Cluster (BOSCO)
-    PubkeyAuthentication yes
-    EOF
+# Policies to allow SSH for HTCondor Remote Cluster (BOSCO)
+PubkeyAuthentication yes
+
+Host *.glideinwms.org
+        StrictHostKeyChecking accept-new
+EOF
     
     # Use: ssh -o StrictHostKeyChecking=accept-new user@hostname
     # to add the fingerprint to ~/.ssh/known_hosts
@@ -95,3 +100,6 @@
     # Os add the following to ~/.ssh/known_hosts
     loginfo "Host key for known_hosts:"
     loginfo "$COMMON_NAME $(ssh-keyscan -H "$COMMON_NAME" 2>/dev/null | grep ssh-ed25519 | cut -d ' ' -f 2-)"
+}
+
+main
