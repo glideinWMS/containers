@@ -54,11 +54,16 @@ RUN yum -y install httpd createrepo_c
 # Cleaning YUM and DNF all caches (including disabled repos) and pip caches to reduce size of image
 RUN rm -rf /var/cache/yum/* /var/cache/dnf/* /root/.cache/pip/*
 
+# When sparse checkout is possible could trim the software-packaging tree (check w/ OSG):
+#  git clone --filter=blob:none --no-checkout https://github.com/osg-htc/software-packaging.git gitrepo && cd /opt/osg/gitrepo && \
+#  copy config/sparse-checkout to ./  (or ./git/info/sparse-checkout  and git read-tree -mu HEAD)
+#  git sparse-checkout set $(<../sparse-c) && git checkout main ; \
 RUN mkdir -p /opt/osg/svnrepo && \
     cd /opt/osg && git clone https://github.com/opensciencegrid/osg-build.git ; \
+    git clone https://github.com/osg-htc/software-packaging.git ; \
     cd /opt/osg/svnrepo && \
     for i in osg-3.6_glideinwms 23-main_glideinwms 23-upcoming_glideinwms 24-main_glideinwms 24-upcoming_glideinwms; \
-    do mkdir "$i"; pushd "$i"; \ 
+    do mkdir "$i"; pushd "$i"; \
     svn co https://vdt.cs.wisc.edu/svn/native/redhat/branches/${i%_glideinwms}/glideinwms; \
     popd; done && \
     chown -R abc: /opt/osg && \
