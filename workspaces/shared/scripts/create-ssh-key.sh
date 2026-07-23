@@ -15,6 +15,7 @@ help_msg() {
     cat << EOF
 $0 [options]
 Initialize a ssh key to use for HTCondor remote cluster (BOSCO)
+This script should run on the host receiving BOSCO jobs (the CE)
   -h       print this message
   -v       verbose mode
   -f       force key re-creation even if it is already there

@@ -5,7 +5,6 @@
 # as function exit code (by return) and this is modulo 256
 # see cluster_list_iterator, list
 
-# TODO: add option to backup keys and passphrase to a backup directory (shared secrets)
 
 # Bosco key location
 bosco_key=$HOME/.ssh/bosco_key.rsa
@@ -652,24 +651,29 @@ get_status () {
 
 usage() {
 cat << EOM
-usage: $0 command
+usage: $0 [options] command
 
-commands:
+Commands:
  -l|--list                  List the installed clusters
- -a|--add host sched        Install and add a cluster, with scheduler sched
- -r|--remove [host]         Remove the installed cluster (first in list)
- -s|--status [host]         Get status of installed cluster
- -t|--test [host]           Test the installed cluster (all clusters)
+ -a|--add HOST [SCHED]      Install and add a cluster, with scheduler sched (must be the last option)
+                            SCHED must be a known scheduler, defaults to pbs
+ -r|--remove [HOST]         Remove the installed cluster (first in list)
+ -s|--status [HOST]         Get status of installed cluster
+ -t|--test [HOST]           Test the installed cluster (all clusters)
+
+Options:
  -o|--override directory    Override the remote installation with a directory structure
  -b|--base-dir directory    Set the name of the remote base install directory (default: bosco)
  -u|--url URL               Set the URL to fetch HTCondor binaries from
- --backup_credentials DIR   Path to backup the ssh keys and passphrase
+ -p|--platform PLATFORM     Force the platform PLATFORM
+ --backup-credentials DIR   Path to backup the ssh keys and passphrase
  --copy-ssh-key (yes|no)    Should the ssh key be copied to the cluster host (default: yes)
+ -k|--key KEY               Key to use for initial connection and setup (only for --add)
  -d|--debug                 Display debugging output
  -h|--help                  Show this help message
 
-Where host is [user@]fqdn.example.com[:22]
-$0 can manage max 254 clustars
+Where HOST is [user@]fqdn.example.com[:22] (can include user name and port number)
+$0 can manage max 254 clusters
 
 EOM
 }
@@ -680,7 +684,7 @@ if [[ $(uname) = "Darwin" ]] ; then
     # Mac OS X doesn't have GNU getopt, so not fancy argument checking here
     TEMP="$@"
 else
-    if ! TEMP=$(getopt -a -o a:ls:t:r:dhp:o:b:u: --longoptions add:,platform:,list,status:,test:,remove:,debug,help,override:,base-dir:,url:,copy-ssh-key:  -n 'condor_remote_cluster' -- "$@") ; then
+    if ! TEMP=$(getopt -a -o a:ls:t:r:dhp:o:b:u:k: --longoptions add:,platform:,list,status:,test:,remove:,debug,help,override:,base-dir:,url:,key:,backup-credentials:,copy-ssh-key:  -n 'condor_remote_cluster' -- "$@") ; then
         usage; echo "Terminating..." >&2; 
         exit 1 
     fi
@@ -694,6 +698,7 @@ release_url=
 beta_url=
 alpha_url=
 snapshot_url=
+ssh_first_option=
 
 # test and remove could have 0 or 1 parameter
 while true; do
@@ -702,8 +707,7 @@ while true; do
         -d|--debug) debug=1; shift;;
         -p|--platform) platform_force=$2; shift 2;;
         -a|--add) remote_host=$2; shift 2; break;;
-        -l|--list) list $2
-                   if [ $? -eq 0 ]; then
+        -l|--list) if list $2; then
                        exit 2
                    fi
                    exit 0 ;;
@@ -715,6 +719,7 @@ while true; do
         -u|--url) release_url=$2; shift 2;;
         --backup-credentials) backup_credentials_dir=$2; shift 2;;
         --copy-ssh-key) copy_ssh_key=$2; shift 2;;
+        -k|--key) ssh_first_option="-i $2"; shift 2;;
         --) echo "No command found" >&2; usage; exit 1;;
         *) echo "Unknown option: $1" >&2; usage; exit 1;;
     esac
@@ -790,13 +795,14 @@ init_ssh_args $remote_host
 if [[ $copy_ssh_key = "yes" ]] ; then
     # Transfer the public key to the remote host
     echo "Enter the password to copy the ssh keys to $remote_host:"
-    cat "${bosco_key}.pub" | ssh $ssh_args $ssh_host "umask 077; test -d ~/.ssh || mkdir ~/.ssh ; cat >> ~/.ssh/authorized_keys"
+    cat "${bosco_key}.pub" | ssh $ssh_first_option $ssh_args $ssh_host "umask 077; test -d ~/.ssh || mkdir ~/.ssh ; cat >> ~/.ssh/authorized_keys"
     if [[ $? -ne 0 ]]; then
         echo "Error copying remote key.  Please make sure you password is correct."
         exit 1
     fi
 fi
 
+# BOSCO key available from here on
 start_ssh
 
 # Quickly test the ssh

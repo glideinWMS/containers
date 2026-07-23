@@ -106,7 +106,7 @@
          <monitorgroups>
          </monitorgroups>
       </entry>
-      <entry name="bosco-ce-workspace.glideinwms.org" enabled="False" gatekeeper="bosco@ce-workspace.glideinwms.org" gridtype="batch condor" bosco_dir="altbosco" verbosity="std" work_dir="AUTO" trust_domain="bosco" auth_method="key_pair">
+      <entry name="bosco-ce-workspace.glideinwms.org" enabled="False" gatekeeper="bosco@ce-workspace.glideinwms.org" gridtype="batch condor" bosco_dir="bosco" verbosity="std" work_dir="AUTO" trust_domain="bosco" auth_method="key_pair">
          <config>
             <max_jobs>
                <per_entry held="2" idle="4" glideins="10"/>
