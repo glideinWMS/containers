@@ -161,6 +161,15 @@ jobs:
           file: worker/fnal-wn-el9/Dockerfile
           tags: fermilab/fnal-wn-el9:${{env.DH_LABEL}}
 
+      - name: Build and push EL9 dev
+        id: docker_build_el9_dev
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          context: worker
+          file: worker/fnal-dev-el9/Dockerfile
+          tags: fermilab/fnal-dev-el9:${{env.DH_LABEL}}
+
       - name: Build and push SL6 OSG 3.5
         id: docker_build_sl6_osg35
         continue-on-error: true
