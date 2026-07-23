@@ -7,8 +7,9 @@ MAINTAINER Marco Mambelli "marcom@fnal.gov"
 LABEL name="Extra packages needed by Spack on top of FNAL Worker Node on EL9 with OSG 23 Worker Node Client"
 
 # Installing packages
-RUN yum install -y --enablerepo=crb --enablerepo=osg \
-    asciidoc autoconf automake bison cigetcert cmake libcurl libcurl-devel flex gdbm gdbm-devel \
+RUN dnf swap -y libcurl-minimal libcurl && \
+    dnf install -y --enablerepo=crb --enablerepo=osg libcurl-devel \
+    asciidoc autoconf automake bison cigetcert cmake flex gdbm gdbm-devel \
     gtk3 gtk3-devel gperf help2man condor libfontenc libfontenc-devel libtool libtool-ltdl-devel \
     libxkbcommon libxkbcommon-devel meson  nasm ninja-build patchelf texinfo  texlive tk tk-devel \
     xorg-x11-util-macros xorg-x11-xtrans-devel 
