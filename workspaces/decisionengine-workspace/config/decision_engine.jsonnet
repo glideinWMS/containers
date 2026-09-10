@@ -27,6 +27,7 @@
     port: 8000,
   },
 
-   glideinwms: import 'glideinwms.libsonnet'
+  # If used with the GlideinWMS (pressure-based) channel uncomment the next line 
+  # glideinwms: import 'glideinwms.libsonnet'
 
 }

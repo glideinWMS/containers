@@ -34,8 +34,8 @@ Install the EL9 version of the specified GlideinWMS software (Factory, Frontend 
 --help                      Print this
 --osg-repo OSG_REPO         Set the repository for the OSG osg-ca-certs, e.g. osg-development, osg (defaults to GWMS_REPO)
 --gwms-repo GWMS_REPO       Set the GlideinWMS repository, e.g. osg-development (default), osg, upcoming-development
---gwms-version GWMS_VERSION Set the GlideinWMS RPM version, e.g. 3.10.17, or 3.11.3-3
---de-repo GWMS_REPO         Set the Decision Engine repository, e.g. osg-development, osg, upcoming-development (defaults to GWMS_REPO)
+--gwms-version GWMS_VERSION Set the GlideinWMS RPM version, e.g. 3.10.17, or 3.11.3-3 (must be in the selected repo)
+--de-repo GWMS_REPO         Set the Decision Engine repository, e.g. osg-development, osg, osg-upcoming-development (defaults to GWMS_REPO)
 --osg-version OSG_VERSION   Set the OSG version, e.g. 24 (default), 23
 --de                        Install Decision Engine
 --factory                   Install the Factory
@@ -283,7 +283,7 @@ configure_frontend(){
         fi
     fi
     chown frontend.frontend $GWMS_CONFIG
-    echo Updated Frontend configuration
+    # echo Updated Frontend configuration
 }
 
 configure_de(){

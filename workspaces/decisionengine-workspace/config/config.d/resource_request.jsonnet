@@ -11,7 +11,7 @@ local channels = [
         condor_config: "/etc/condor/condor_config",
         factories: [
           {
-            collector_host: "decisionengine-workspace.glideinwms.org:9618",
+            collector_host: "factory-workspace.glideinwms.org:9618",
             classad_attrs: []
           },
         ],
@@ -24,7 +24,7 @@ local channels = [
         condor_config: "/etc/condor/condor_config",
         factories: [
           {
-            collector_host: "decisionengine-workspace.glideinwms.org:9618",
+            collector_host: "factory-workspace.glideinwms.org:9618",
             classad_attrs: [],
             correction_map: {
                "GLIDEIN_Resource_Slots":'',

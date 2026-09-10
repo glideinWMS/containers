@@ -50,6 +50,7 @@ if [[ -n "$IS_FACTORY" ]]; then
     TOKEN_DIR=/var/lib/gwms-factory/.condor/tokens.d
     failed_command=false
     condor_token_create -id vofrontend_service@"$HOSTNAME" -key POOL > "$TOKEN_DIR"/frontend."$HOSTNAME".idtoken || failed_command=true
+    condor_token_create -id decisionengine_service@"$HOSTNAME" -key POOL > "$TOKEN_DIR"/decisionengine."$HOSTNAME".idtoken || failed_command=true
     condor_token_create -id gfactory@"$HOSTNAME" > "$TOKEN_DIR"/gfactory."$HOSTNAME".idtoken || failed_command=true
     if $failed_command; then
         echo "WARNING: condor_token_create failed"
