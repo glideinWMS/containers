@@ -12,7 +12,8 @@ RUN dnf swap -y libcurl-minimal libcurl && \
     asciidoc autoconf automake bison cigetcert cmake flex gdbm gdbm-devel \
     gtk3 gtk3-devel gperf help2man condor libfontenc libfontenc-devel libtool libtool-ltdl-devel \
     libxkbcommon libxkbcommon-devel meson  nasm ninja-build patchelf texinfo  texlive tk tk-devel \
-    xorg-x11-util-macros xorg-x11-xtrans-devel 
+    xorg-x11-util-macros xorg-x11-xtrans-devel \
+    gh bc jc
 
 # Default entry point
 CMD ["/bin/bash"]
