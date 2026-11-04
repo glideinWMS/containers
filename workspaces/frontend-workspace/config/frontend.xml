@@ -51,9 +51,16 @@
       </credentials>
    </security>
    <stage base_dir="/var/lib/gwms-frontend/web-area/stage" use_symlink="True" web_base_url="http://frontend-workspace.glideinwms.org/vofrontend/stage"/>
+    <!--  NAT replace the previous line with the following replacing the correct gwms-web address:
+      <stage base_dir="/var/lib/gwms-frontend/web-area/stage" use_symlink="True" web_base_url="http://gwms-web.fnal.gov/iri/vofrontend/stage"/> 
+      -->
    <work base_dir="/var/lib/gwms-frontend/vofrontend" base_log_dir="/var/log/gwms-frontend"/>
    <attrs>
+      <!-- Consider also these HTCondor debug levels: D_CAT,D_SECURITY:1,D_FULLDEBUG -->
       <attr name="ALL_DEBUG" glidein_publish="True" job_publish="True" parameter="True" type="string" value="D_SECURITY,D_FULLDEBUG"/>
+      <!-- NAT use the actual server, issuer of the idtoken, for the trust domain instead of the NAT host (optional)
+      <attr name="TRUST_DOMAIN" glidein_publish="True" job_publish="True" parameter="True" type="string" value="frontend-workspace.glideinwms.org"/>
+      -->
       <attr name="GLIDEIN_DEBUG_OUTPUT" glidein_publish="True" job_publish="True" parameter="False" type="string" value="True"/>
        <!-- Consider also usertrace,nowait,nocleanup,cscripttrace as GLIDEIN_DEBUG_OPTIONS -->
       <attr name="GLIDEIN_DEBUG_OPTIONS" glidein_publish="True" job_publish="True" parameter="False" type="string" value="userjob"/>
@@ -117,6 +124,10 @@
    <collectors>
       <collector DN="/C=US/ST=Illinois/L=Batavia/O=GlideinWMS/CN=frontend-workspace.glideinwms.org" group="default" node="frontend-workspace.glideinwms.org:9618" secondary="False"/>
       <collector DN="/C=US/ST=Illinois/L=Batavia/O=GlideinWMS/CN=frontend-workspace.glideinwms.org" group="default" node="frontend-workspace.glideinwms.org:9618?sock=collector1-40" secondary="True"/>
+      <!-- NAT - pointing to the NAT server
+      <collector DN="/C=US/ST=Illinois/L=Batavia/O=GlideinWMS/CN=frontend-workspace.glideinwms.org" group="default" node="gwms-web.fnal.gov:9618" secondary="False"/>
+      <collector DN="/C=US/ST=Illinois/L=Batavia/O=GlideinWMS/CN=frontend-workspace.glideinwms.org" group="default" node="gwms-web.fnal.gov:9618?sock=collector1-40" secondary="True"/>
+      -->
    </collectors>
    <files>
       <file absfname="/var/lib/gwms-frontend/web-base/frontend/default_singularity_wrapper.sh" after_entry="True" after_group="False" const="True" executable="False" period="0" prefix="GLIDEIN_PS_" untar="False" wrapper="True" type="wrapper">

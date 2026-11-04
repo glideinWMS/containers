@@ -249,11 +249,13 @@ configure_factory(){
 
     # Condor tarball
     # These must match the Factory configuration in the factory-workspace/config
+    local htc_prefix="${HTC_VERSION%.*}"  # This works only for production releases (X.0)
     CONDOR_TARBALL_URLS="
-    https://research.cs.wisc.edu/htcondor/tarball/24.0/${HTC_VERSION}/release/condor-${HTC_VERSION}-$(arch)_AlmaLinux9-stripped.tar.gz
-    https://research.cs.wisc.edu/htcondor/tarball/24.0/${HTC_VERSION}/release/condor-${HTC_VERSION}-$(arch)_AlmaLinux8-stripped.tar.gz
+    https://research.cs.wisc.edu/htcondor/tarball/${htc_prefix}/${HTC_VERSION}/release/condor-${HTC_VERSION}-$(arch)_AlmaLinux9-stripped.tar.gz
+    https://research.cs.wisc.edu/htcondor/tarball/${htc_prefix}/${HTC_VERSION}/release/condor-${HTC_VERSION}-$(arch)_AlmaLinux8-stripped.tar.gz
     https://research.cs.wisc.edu/htcondor/tarball/10/10.x/10.6.0/release/condor-10.6.0-$(arch)_AlmaLinux9-stripped.tar.gz
     https://research.cs.wisc.edu/htcondor/tarball/9.0/9.0.18/release/condor-9.0.18-x86_64_CentOS7-stripped.tar.gz
+    https://htcss-downloads.chtc.wisc.edu/tarball/25.0/25.0.14/release/condor-25.0.14-x86_64_openSUSE16-stripped.tar.gz
     "
     CONDOR_TARBALL_PATH=/var/lib/gwms-factory/condor
     [ ! -d $CONDOR_TARBALL_PATH ] && mkdir -p $CONDOR_TARBALL_PATH

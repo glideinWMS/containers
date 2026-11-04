@@ -209,16 +209,88 @@
          <monitorgroups>
          </monitorgroups>
       </entry>
+      <entry name="iri-perlmutter.nersc.gov" enabled="False" gatekeeper="USER@perlmutter.nersc.gov" gridtype="batch iri" verbosity="std" work_dir="AUTO" trust_domain="grid" auth_method="scitoken">
+         <config>
+            <max_jobs>
+               <per_entry held="5" idle="2" glideins="2"/>
+               <default_per_frontend held="5" idle="2" glideins="2"/>
+               <per_frontends>
+               </per_frontends>
+            </max_jobs>
+            <release max_per_cycle="20" sleep="0.2"/>
+            <remove max_per_cycle="5" sleep="0.2"/>
+            <restrictions require_voms_proxy="False"/>
+            <submit cluster_size="10" max_per_cycle="100" sleep="0.2">
+                <submit_attrs>
+                    <submit_attr name="+maxMemory" value="(RequestMemory ?: 1)"/>
+                    <!-- Other attributes {"attributes": {"custom_attributes": {"constraint": "cpu"}, "queue_name": "debug", "account": "m0000", } } -->
+                    <submit_attr name="batch_extra_submit_args" value='{"attributes": {"custom_attributes": {"constraint": "cpu"}, } }'/>
+                    <submit_attr name="environment" value="FOO=3 BAR=smell"/>
+                </submit_attrs>
+            </submit>
+         </config>
+         <allow_frontends>
+         </allow_frontends>
+         <attrs>
+            <attr name="GLIDEIN_Site" const="True" glidein_publish="True" job_publish="True" parameter="True" publish="True" type="string" value="iri-perlmutter.nersc.gov"/>
+            <attr name="CONDOR_VERSION" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="default"/>
+            <attr name="CONDOR_ARCH" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="x86_64"/>
+            <attr name="CONDOR_OS" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="suse16"/>
+         </attrs>
+         <files>
+         </files>
+         <infosys_refs>
+         </infosys_refs>
+         <monitorgroups>
+         </monitorgroups>
+      </entry>
+      <entry name="sfapi-perlmutter.nersc.gov" enabled="False" gatekeeper="dtucker@perlmutter.nersc.gov" gridtype="batch sfapi" verbosity="std" work_dir="AUTO" trust_domain="grid" auth_method="scitoken">
+         <config>
+            <max_jobs>
+               <per_entry held="5" idle="2" glideins="2"/>
+               <default_per_frontend held="5" idle="2" glideins="2"/>
+               <per_frontends>
+               </per_frontends>
+            </max_jobs>
+            <release max_per_cycle="20" sleep="0.2"/>
+            <remove max_per_cycle="5" sleep="0.2"/>
+            <restrictions require_voms_proxy="False"/>
+            <submit cluster_size="10" max_per_cycle="100" sleep="0.2">
+                <submit_attrs>
+                    <submit_attr name="+maxMemory" value="(RequestMemory ?: 1)"/>
+                    <submit_attr name="batch_extra_submit_args" value="{'attributes': {'custom_attributes': {'constraint': 'cpu'} } }"/>
+                    <submit_attr name="environment" value="FOO=3 BAR=smell"/>
+                </submit_attrs>
+            </submit>
+         </config>
+         <allow_frontends>
+         </allow_frontends>
+         <attrs>
+            <attr name="GLIDEIN_Site" const="True" glidein_publish="True" job_publish="True" parameter="True" publish="True" type="string" value="iri-perlmutter.nersc.gov"/>
+            <attr name="CONDOR_VERSION" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="default"/>
+            <attr name="CONDOR_ARCH" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="x86_64"/>
+            <attr name="CONDOR_OS" const="False" glidein_publish="False" job_publish="False" parameter="True" publish="True" type="string" value="suse16"/>
+         </attrs>
+         <files>
+         </files>
+         <infosys_refs>
+         </infosys_refs>
+         <monitorgroups>
+         </monitorgroups>
+      </entry>       
    </entries>
    <condor_tarballs>
       <!-- TODO: Update both install-glideinwms.sh and the factory-workspace/Dockerfile to be in sync w/ this file -->
+      <!-- Condor tarballs can be found here: https://htcss-downloads.chtc.wisc.edu/tarball/ -->
       <condor_tarball arch="default" os="default" version="default" base_dir="/var/lib/gwms-factory/condor/condor-24.0.8-1-[ARCH]_AlmaLinux9-stripped"/>
       <condor_tarball arch="[ARCH]"  os="rhel9"   version="default" base_dir="/var/lib/gwms-factory/condor/condor-24.0.8-1-[ARCH]_AlmaLinux9-stripped"/>
       <condor_tarball arch="[ARCH]"  os="rhel9"   version="24.0.8"  base_dir="/var/lib/gwms-factory/condor/condor-24.0.8-1-[ARCH]_AlmaLinux9-stripped"/>
       <condor_tarball arch="[ARCH]"  os="rhel9"   version="10.6.0"  base_dir="/var/lib/gwms-factory/condor/condor-10.6.0-1-[ARCH]_AlmaLinux9-stripped"/>
       <!-- WARNING: Using the tar file to avoid tar building and ldd use incompatible with aarch64 -->
-      <condor_tarball arch="x86_64"  os="rhel8"   version="default" tar_file="/var/lib/gwms-factory/condor/condor-24.0.8-[ARCH]_AlmaLinux8-stripped.tar.gz"/>
-      <condor_tarball arch="x86_64"  os="rhel8"   version="24.0.8"  tar_file="/var/lib/gwms-factory/condor/condor-24.0.8-[ARCH]_AlmaLinux8-stripped.tar.gz"/>
+       condor-25.0.14-x86_64_openSUSE16-stripped.tar.gz
+      <condor_tarball arch="x86_64"  os="suse16"  version="default" tar_file="/var/lib/gwms-factory/condor/condor-25.0.14-x86_64_openSUSE16-stripped.tar.gz"/>
+      <condor_tarball arch="[ARCH]"  os="rhel8"   version="default" tar_file="/var/lib/gwms-factory/condor/condor-24.0.8-[ARCH]_AlmaLinux8-stripped.tar.gz"/>
+      <condor_tarball arch="[ARCH]"  os="rhel8"   version="24.0.8"  tar_file="/var/lib/gwms-factory/condor/condor-24.0.8-[ARCH]_AlmaLinux8-stripped.tar.gz"/>
       <condor_tarball arch="x86_64"  os="rhel7"   version="default" tar_file="/var/lib/gwms-factory/condor/condor-9.0.18-x86_64_CentOS7-stripped.tar.gz"/>
       <condor_tarball arch="x86_64"  os="rhel7"   version="9.0.18"  tar_file="/var/lib/gwms-factory/condor/condor-9.0.18-x86_64_CentOS7-stripped.tar.gz"/>
    </condor_tarballs>
