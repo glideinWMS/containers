@@ -1,0 +1,17 @@
+# File: /etc/systemd/system/host1-collector-nat.service
+# Referred by link: /etc/systemd/system/multi-user.target.wants/gwms-collector-nat.service
+[Unit]
+Description=GWMS frontend collector TCP NAT to frontend container host
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+EnvironmentFile=/etc/sysconfig/host1-collector-nat
+ExecStart=/usr/local/sbin/gwms-collector-nat apply
+ExecStop=/usr/local/sbin/gwms-collector-nat remove-rules
+
+[Install]
+WantedBy=multi-user.target
+

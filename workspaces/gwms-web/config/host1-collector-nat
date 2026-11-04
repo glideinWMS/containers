@@ -1,0 +1,12 @@
+# File: /etc/sysconfig/host1-collector-nat
+# There can be multiple files for multiple backend servers. LISTEN... is the NAT server, BACKEND... the backend
+# Via tha binary gwms-collector-nat a NAT setup is added or removed
+LISTEN_IP=192.0.0.1
+LISTEN_PORT=9618
+BACKEND_IP=10.0.0.1
+BACKEND_PORT=9618
+IFACE=eth0
+NAT_TABLE=gwms_collector_nat
+FORWARD_TABLE=filter
+FORWARD_CHAIN=default_fwd
+FORWARD_COMMENT=gwms_collector_nat_forward

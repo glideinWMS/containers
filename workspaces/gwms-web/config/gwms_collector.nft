@@ -1,0 +1,63 @@
+#!/usr/bin/nft -f
+
+# File: /etc/nftables/gwms_collector.nft
+# included in /etc/sysconfig/nftables.conf
+
+# These rules punch needed holes in the Puppet configured firewall (Puppet rules must be loaded first)
+# Open ports for http and condor
+add rule inet filter default_in tcp dport { 80, 443, 9618, 9619 } ct state new,established accept
+# Adds forwarding rules
+# This is very specific:
+# add rule inet filter default_fwd ct status dnat ct original proto-dst 9618 ip daddr 131.225.60.77 tcp dport 49618 accept
+# add rule inet filter default_fwd ct status dnat ct original proto-dst 9619 ip daddr 131.225.60.170 tcp dport 49618 accept
+# This for all DNAT: add rule inet filter default_fwd ct status dnat accept
+# This is server independent:
+add rule inet filter default_fwd  meta l4proto { tcp, udp } ct status dnat ct original proto-dst { 9618, 9619 } accept
+
+# Table for GWMS collectors forwarding
+# Create is not exists to avoid errors
+# Clear out any existing rules in this table to prevent conflicts (make sure there are no conflicting nat tables)
+create table ip gwms_collector_nat
+flush table ip gwms_collector_nat
+
+table ip gwms_collector_nat {
+
+    # Map is not working on some nft versions because of a parser error
+    ## Map layout: [protocol . port] : [Target IP Address . Target Port]
+    #map port_forward_map {
+    #    type proto . inet_service : ipv4_addr . inet_service
+    #    elements = {
+    #        tcp . 9618 : 131.225.60.170 . 49618,   # fermicloud757.fnal.gov - IRI test 261103
+    #        udp . 9618 : 131.225.60.170 . 49618,   #
+    #        tcp . 9619 : 131.225.60.170 . 49618,   # fermicloud849.fnal.gov
+    #        udp . 9619 : 131.225.60.170 . 49618    #
+    #    }
+    #}
+
+    #chain prerouting {
+    #    type nat hook prerouting priority dstnat; policy accept;
+    #
+    #    # Direct traffic dynamically and rewrite both IP and Port based on the map lookup
+    #    dnat to meta l4proto . th dport map @port_forward_map
+    #}
+
+    chain prerouting {
+        type nat hook prerouting priority dstnat; policy accept;
+
+        # fermicloud757.fnal.gov - IRI test 261103: Port 9618 -> 49618
+        meta l4proto { tcp, udp } th dport 9618 dnat to 131.225.60.77:49618
+
+        # fermicloud849.fnal.gov: Port 9619 -> 49618
+        meta l4proto { tcp, udp } th dport 9619 dnat to 131.225.60.170:49618
+    }
+
+    chain postrouting {
+        type nat hook postrouting priority srcnat; policy accept;
+
+        # Force return traffic through this firewall using your static public IP (gwms-web is 131.225.60.231)
+        oifname "eth0" snat to 131.225.60.231
+        # masquerade is automatic but less efficient
+        # oifname "eth0" masquerade
+    }
+}
+

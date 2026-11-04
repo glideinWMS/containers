@@ -1,0 +1,21 @@
+# Alternative proxy service via ncat
+# File: /etc/systemd/system/gwms-collector-proxy.service.ncat.bak.20260609T213915Z
+# backend service host1.my.dom:49618
+
+[Unit]
+Description=GWMS frontend collector TCP proxy
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ncat -4 -l -k 0.0.0.0 9618 --sh-exec "/usr/bin/ncat -4 host1.my.dom 49618"
+Restart=always
+RestartSec=2
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target
+/etc/systemd/system/gwms-collector-proxy.service.ncat.bak.20260609T213915Z (END)
+
+

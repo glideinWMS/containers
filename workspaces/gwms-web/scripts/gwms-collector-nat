@@ -1,0 +1,125 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+CONFIG_FILE=${GWMS_COLLECTOR_NAT_CONFIG:-/etc/sysconfig/gwms-collector-nat}
+NAT_TABLE=${NAT_TABLE:-gwms_collector_nat}
+FORWARD_TABLE=${FORWARD_TABLE:-filter}
+FORWARD_CHAIN=${FORWARD_CHAIN:-default_fwd}
+FORWARD_COMMENT=${FORWARD_COMMENT:-gwms_collector_nat_forward}
+
+usage() {
+    cat <<'EOF'
+Usage:
+  gwms-collector-nat apply
+  gwms-collector-nat remove-rules
+  gwms-collector-nat status
+
+Options:
+  -h       (--help) print this
+  -c FILE  (--config) Read FILE for the configuration.
+           Reads /etc/sysconfig/gwms-collector-nat by default.
+EOF
+}
+
+die() {
+    echo "ERROR: $*" >&2
+    exit 1
+}
+
+require_root() {
+    [ "$(id -u)" -eq 0 ] || die "must run as root"
+}
+
+require_cmds() {
+    local missing=0
+    for cmd in nft sysctl awk grep; do
+        command -v "$cmd" >/dev/null 2>&1 || { echo "Missing required command: $cmd" >&2; missing=1; }
+    done
+    [ "$missing" -eq 0 ] || exit 1
+}
+
+load_config() {
+    [ -r "$CONFIG_FILE" ] || die "cannot read config: $CONFIG_FILE"
+    # shellcheck disable=SC1090
+    . "$CONFIG_FILE"
+}
+
+validate_rule() {
+    [ -n "${LISTEN_IP:-}" ] || die "LISTEN_IP is required"
+    [ -n "${LISTEN_PORT:-}" ] || die "LISTEN_PORT is required"
+    [ -n "${BACKEND_IP:-}" ] || die "BACKEND_IP is required"
+    [ -n "${BACKEND_PORT:-}" ] || die "BACKEND_PORT is required"
+    [ -n "${IFACE:-}" ] || die "IFACE is required"
+    case "$LISTEN_PORT" in *[!0-9]*|"") die "LISTEN_PORT must be numeric" ;; esac
+    case "$BACKEND_PORT" in *[!0-9]*|"") die "BACKEND_PORT must be numeric" ;; esac
+}
+
+delete_forward_rules() {
+    local handle
+    nft -a list chain inet "$FORWARD_TABLE" "$FORWARD_CHAIN" 2>/dev/null |
+        awk -v comment="$FORWARD_COMMENT" '$0 ~ comment { print $NF }' |
+        while read -r handle; do
+            [ -n "$handle" ] || continue
+            nft delete rule inet "$FORWARD_TABLE" "$FORWARD_CHAIN" handle "$handle" 2>/dev/null || true
+        done
+}
+
+apply_rules() {
+    validate_rule
+
+    sysctl -w net.ipv4.ip_forward=1 >/dev/null
+
+    nft delete table ip "$NAT_TABLE" 2>/dev/null || true
+    nft add table ip "$NAT_TABLE"
+    nft add chain ip "$NAT_TABLE" prerouting '{ type nat hook prerouting priority dstnat; policy accept; }'
+    nft add chain ip "$NAT_TABLE" postrouting '{ type nat hook postrouting priority srcnat; policy accept; }'
+    nft add rule ip "$NAT_TABLE" prerouting \
+        iifname "$IFACE" ip daddr "$LISTEN_IP" tcp dport "$LISTEN_PORT" \
+        dnat to "$BACKEND_IP:$BACKEND_PORT" comment gwms_collector_nat_dnat
+    nft add rule ip "$NAT_TABLE" postrouting \
+        oifname "$IFACE" ip daddr "$BACKEND_IP" tcp dport "$BACKEND_PORT" \
+        snat to "$LISTEN_IP" comment gwms_collector_nat_snat
+
+    delete_forward_rules
+    nft list chain inet "$FORWARD_TABLE" "$FORWARD_CHAIN" >/dev/null 2>&1 || return 0
+    nft add rule inet "$FORWARD_TABLE" "$FORWARD_CHAIN" \
+        iifname "$IFACE" oifname "$IFACE" ip daddr "$BACKEND_IP" \
+        tcp dport "$BACKEND_PORT" accept comment "$FORWARD_COMMENT"
+}
+
+remove_rules() {
+    nft delete table ip "$NAT_TABLE" 2>/dev/null || true
+    delete_forward_rules
+}
+
+status_rules() {
+    systemctl --no-pager -l status gwms-collector-nat.service || true
+    echo
+    echo "NAT table:"
+    nft list table ip "$NAT_TABLE" 2>/dev/null || true
+    echo
+    echo "Forward rule:"
+    nft list chain inet "$FORWARD_TABLE" "$FORWARD_CHAIN" 2>/dev/null | grep "$FORWARD_COMMENT" || true
+    echo
+    echo "IP forwarding:"
+    sysctl net.ipv4.ip_forward
+}
+
+ACTION=${1:-}
+case "$ACTION" in
+    -h|--help) usage; exit 0 ;;
+    -c|--config) CONFIG_FILE="$2"; shift 2; ACTION=${1:-} ;;
+esac
+[ -n "$ACTION" ] || { usage; exit 2; }
+
+require_root
+require_cmds
+load_config
+
+case "$ACTION" in
+    apply) apply_rules ;;
+    remove-rules) remove_rules ;;
+    status) status_rules ;;
+    *) usage; exit 2 ;;
+esac
+
