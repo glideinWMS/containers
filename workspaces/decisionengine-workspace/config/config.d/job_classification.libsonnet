@@ -140,7 +140,8 @@
           "GLIDEIN_MASTER_NAME": '',
           "GLIDEIN_Site": ''
         },
-        collector_host: "decisionengine-workspace.glideinwms.org:9618",
+        # Was: "decisionengine-workspace.glideinwms.org:9618" - isn't this the POOL collector? For the startd/glideins
+        collector_host: "factory-workspace.glideinwms.org:9618",
         condor_config: "/etc/condor/condor_config"
       },
       max_attempts: 100,
