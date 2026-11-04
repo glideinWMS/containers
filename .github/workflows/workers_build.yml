@@ -53,7 +53,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: set debug info
         id: set_debug
@@ -99,17 +99,17 @@ jobs:
           echo "DH_LABEL=$DH_LABEL-$(date +%Y%m%d-%H%M)" >> $GITHUB_ENV
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Log in to Docker Hub
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push SL6
         id: docker_build_sl6
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           push: true
           context: worker
@@ -118,7 +118,7 @@ jobs:
 
       - name: Build and push SL7 base
         id: docker_build_el7_base
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           push: true
           context: worker
@@ -127,7 +127,7 @@ jobs:
 
       - name: Build and push SL7
         id: docker_build_el7
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           push: true
           context: worker
@@ -136,7 +136,7 @@ jobs:
 
       - name: Build and push SL7 dev
         id: docker_build_el7_dev
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           push: true
           context: worker
@@ -145,7 +145,7 @@ jobs:
 
       - name: Build and push EL8
         id: docker_build_el8
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           push: true
           context: worker
@@ -154,7 +154,7 @@ jobs:
 
       - name: Build and push EL9
         id: docker_build_el9
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           push: true
           context: worker
@@ -163,7 +163,7 @@ jobs:
 
       - name: Build and push EL9 dev
         id: docker_build_el9_dev
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           push: true
           context: worker
@@ -173,8 +173,8 @@ jobs:
       - name: Build and push SL6 OSG 3.5
         id: docker_build_sl6_osg35
         continue-on-error: true
-        if: ${{ env.OSG_VERISON }} == 'osg35'
-        uses: docker/build-push-action@v6
+        if: env.OSG_VERISON == 'osg35'
+        uses: docker/build-push-action@v7
         with:
           push: true
           context: worker
