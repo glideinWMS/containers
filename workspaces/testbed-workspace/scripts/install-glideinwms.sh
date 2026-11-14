@@ -9,7 +9,7 @@
 ### INTRO ###
 
 # Environment
-OSG_VERSION=24
+OSG_VERSION=25
 DE_REPO=
 OSG_REPO=
 GWMS_REPO=osg-development
@@ -36,7 +36,7 @@ Install the EL9 version of the specified GlideinWMS software (Factory, Frontend 
 --gwms-repo GWMS_REPO       Set the GlideinWMS repository, e.g. osg-development (default), osg, upcoming-development
 --gwms-version GWMS_VERSION Set the GlideinWMS RPM version, e.g. 3.10.17, or 3.11.3-3 (must be in the selected repo)
 --de-repo GWMS_REPO         Set the Decision Engine repository, e.g. osg-development, osg, osg-upcoming-development (defaults to GWMS_REPO)
---osg-version OSG_VERSION   Set the OSG version, e.g. 24 (default), 23
+--osg-version OSG_VERSION   Set the OSG version, e.g. 25 (default), 26, 24, 23
 --de                        Install Decision Engine
 --factory                   Install the Factory
 --frontend                  Install the Frontend
@@ -271,20 +271,33 @@ configure_factory(){
     cp /opt/config/99-cafile.conf /etc/condor/config.d/
 }
 
+fix_frontend_config() {
+    # 1 - frontend_config_path
+    #GWMS_CONFIG=/etc/gwms-frontend/frontend.xml
+    local frontend_config_path="$1"
+    if [[ "$(python3 -c 'from glideinwms.lib.credentials import credentials; print(credentials.__file__)' 2>/dev/null)" = *credentials.py ]]; then
+        sed -i 's/plugin="ProxyAll"/plugin="CredentialsBasic"/' "$frontend_config_path"
+        # Self-signed scitoken can be only when using refactored credentials
+        if $GWMS_SCITOKEN_KEY; then
+            if gen_scitoken_config=$(make_scitoken_key -c decisionengine -p | tr '\n' ' ' | sed -e 's/[\/&]/\\&/g' ); then
+                cp "$frontend_config_path" "$frontend_config_path".bck
+                sed -i "s|<credential absfname=\"/var/lib/gwms-frontend/.condor/tokens.d/frontend-workspace.glideinwms.org.scitoken[^>]*>|$gen_scitoken_config|" "$frontend_config_path"
+            else
+                echo "WARNING: scitoken key generation failed - keeping scitoken from htgettoken, no self-signed scitoken"
+                GWMS_SCITOKEN_KEY=false
+            fi
+        fi
+    fi
+}
+
 configure_frontend(){
     # GlideinWMS Frontend configuration
     "$QUIET" || echo "DO Configure - frontend"
+    # Starting form the workspace version of frontend.xml
     GWMS_CONFIG=/etc/gwms-frontend/frontend.xml
-    cp /opt/config/frontend/frontend.xml $GWMS_CONFIG
-    if [[ "$(python3 -c 'from glideinwms.lib.credentials import credentials; print(credentials.__file__)' 2>/dev/null)" = *credentials.py ]]; then
-        sed -i 's/plugin="ProxyAll"/plugin="CredentialsBasic"/' $GWMS_CONFIG
-        if $GWMS_SCITOKEN_KEY; then
-            gen_scitoken_config=$(make_scitoken_key -c frontend -p | tr '\n' ' ' | sed -e 's/[\/&]/\\&/g' )
-            cp $GWMS_CONFIG $GWMS_CONFIG.bck
-            sed -i "s|<credential absfname=\"/var/lib/gwms-frontend/.condor/tokens.d/frontend-workspace.glideinwms.org.scitoken[^>]*>|$gen_scitoken_config|" $GWMS_CONFIG
-        fi
-    fi
-    chown frontend.frontend $GWMS_CONFIG
+    cp /opt/config/frontend/frontend.xml "$GWMS_CONFIG"
+    fix_frontend_config "$GWMS_CONFIG"
+    chown frontend.frontend "$GWMS_CONFIG"
     # echo Updated Frontend configuration
 }
 
@@ -296,15 +309,9 @@ configure_de(){
     mkdir -p /var/run/postgresql
     chown postgres: /var/run/postgresql
     # Fix Frontend install
+    # Starting form the stock RPM version of frontend.xml
     GWMS_CONFIG=/etc/gwms-frontend/frontend.xml
-    if [[ "$(python3 -c 'from glideinwms.lib.credentials import credentials; print(credentials.__file__)' 2>/dev/null)" = *credentials.py ]]; then
-        sed -i 's/plugin="ProxyAll"/plugin="CredentialsBasic"/' $GWMS_CONFIG
-        if $GWMS_SCITOKEN_KEY; then
-            gen_scitoken_config=$(make_scitoken_key -c decisionengine -p | tr '\n' ' ' | sed -e 's/[\/&]/\\&/g' )
-            cp $GWMS_CONFIG $GWMS_CONFIG.bck
-            sed -i "s|<credential absfname=\"/var/lib/gwms-frontend/.condor/tokens.d/frontend-workspace.glideinwms.org.scitoken[^>]*>|$gen_scitoken_config|" $GWMS_CONFIG
-        fi
-    fi
+    fix_frontend_config "$GWMS_CONFIG"
     # TODO: to improve in packaging - remove when not needed
     chown -R decisionengine: /etc/gwms-frontend
 }
