@@ -36,13 +36,19 @@ which is starting from bare-bone workspaces and installing GlideinWMS via the pr
 
 You can start the GlideinWMS ITB setup with the following commands.
 The `IMAGE_NAMESPACE` variable is optional, allows to pick a different repository, you can use a local name or also a full path like `docker.io/USERNAME/IMAGE`; the `glideinwms` namespace is the default.
-The `podman-compose up` command builds unavailable images, so use the pull command to download the all the images from the repository (e.g. glideinwms on Docker Hub) if you prefer so.
-The compose file contains both the image path and the build instructions, so if the images are not available podman-compose will prioritize building new images.
-If you want to download them you have to pull them first:
+The `podman-compose up` command is inconsistent depending on versions. Usually it uses local images if available.
+The compose file contains both the image path and the build instructions, so if the images are not available podman-compose, depending on its version, may prioritize building or downloading new images.
+So use the up command with the `--no-build` option or the pull command to download all the images from the repository (e.g. glideinwms on Docker Hub) if you prefer so.
+
+If you want to start from a clean slate, remove the locally available images:
+```bash
+podman rmi -a
+```
+If you want to download the images you have to pull them first:
 ```bash
 IMAGE_NAMESPACE=docker.io/glideinwms podman-compose pull
 ```
-If you want to build all the images, including the gwms-workspace, and download only the small almalinux 9, use:
+If you want to build/rebuild all the images, including the gwms-workspace, and download only the small almalinux 9, use:
 ```bash
 podman-compose -f compose-buildbase.yml build
 ```
@@ -137,10 +143,10 @@ You can start the CE manually or add it in a compose file with a section like:
 ## Testbed setup
 
 The testbed defined via the `testbed-workspace` image and the `compose-testbed.yml` compose file start from a barebone OS image to test better the RPM installation of the system.
-In this example we use `compose-wports.yml` to be able to also interact from outside.
+In this example we use `compose-wports.yml` to be able to also interact from outside and `IMAGE_NAMESPACE` to try to prioritize download (you may want to add also `--no-build` - see above).
 ```bash
 export TEST_DIR=$HOME/ws-test
-GWMS_PATH="$TEST_DIR"/gwms/ BASE_COMPOSE=compose-testbed.yml podman-compose -f compose-wports.yml up -d
+GWMS_PATH="$TEST_DIR"/gwms/ IMAGE_NAMESPACE=docker.io/glideinwms  BASE_COMPOSE=compose-testbed.yml podman-compose -f compose-wports.yml up -d
 podman exec -it testbed-ce-workspace.glideinwms.org /opt/scripts/startup.sh
 podman exec -it testbed-factory-workspace.glideinwms.org /opt/scripts/install-glideinwms.sh --logserver
 podman exec -it testbed-frontend-workspace.glideinwms.org /opt/scripts/install-glideinwms.sh

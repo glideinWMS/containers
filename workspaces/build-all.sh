@@ -10,7 +10,8 @@ MY_NAMESPACE=
 [[ -n "$IMAGE_NAMESPACE" ]] && MY_NAMESPACE="${IMAGE_NAMESPACE%/}/" || true
 # Exporting IMAGE_NAMESPACE for Dockerfiles
 export IMAGE_NAMESPACE
-export BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+export BUILD_DATE
 
 # Building for the local architecture
 podman build --build-arg BUILD_DATE=$BUILD_DATE -t "$MY_NAMESPACE"gwms-workspace -f gwms-workspace/Dockerfile  .

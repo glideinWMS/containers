@@ -9,12 +9,13 @@ services:
 
   build-workspace:
     container_name: build-workspace.glideinwms.org
+    image: ${IMAGE_NAMESPACE-glideinwms}/build-workspace:${IMAGE_LABEL-latest}
     build:
       context: .
       cache_from:
         - ${IMAGE_NAMESPACE-glideinwms}/build-workspace
       dockerfile: build-workspace/Dockerfile
-    image: ${IMAGE_NAMESPACE-glideinwms}/build-workspace:${IMAGE_LABEL-latest}
+    pull_policy: missing
     privileged: true
     networks:
       - gwms

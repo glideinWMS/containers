@@ -10,13 +10,14 @@ services:
 
   ce-workspace:
     container_name: ce-workspace.glideinwms.org
+    image: ${IMAGE_NAMESPACE-glideinwms}/ce-workspace:${IMAGE_LABEL-latest}
     build:
       context: .
       cache_from:
         # Removing the label from the cache_from, otherwise is failing with buildah (podman)
         - ${IMAGE_NAMESPACE-glideinwms}/ce-workspace
       dockerfile: ce-workspace/Dockerfile
-    image: ${IMAGE_NAMESPACE-glideinwms}/ce-workspace:${IMAGE_LABEL-latest}
+    pull_policy: missing
     # To run sshd you need: --cap-add AUDIT_WRITE  --cap-add AUDIT_CONTROL
     cap_add:
       - AUDIT_WRITE
@@ -42,12 +43,13 @@ services:
 
   factory-workspace:
     container_name: factory-workspace.glideinwms.org
+    image: ${IMAGE_NAMESPACE-glideinwms}/factory-workspace:${IMAGE_LABEL-latest}
     build:
       context: .
       cache_from:
         - ${IMAGE_NAMESPACE-glideinwms}/factory-workspace
       dockerfile: factory-workspace/Dockerfile
-    image: ${IMAGE_NAMESPACE-glideinwms}/factory-workspace:${IMAGE_LABEL-latest}
+    pull_policy: missing
     volumes:
       - gwms-tokens:/var/lib/gwms-factory/.condor/tokens.d
       - ${GWMS_PATH-gwms-dev-local}:/opt/gwms
@@ -62,12 +64,13 @@ services:
 
   frontend-workspace:
     container_name: frontend-workspace.glideinwms.org
+    image: ${IMAGE_NAMESPACE-glideinwms}/frontend-workspace:${IMAGE_LABEL-latest}
     build:
       context: .
       cache_from:
         - ${IMAGE_NAMESPACE-glideinwms}/frontend-workspace
       dockerfile: frontend-workspace/Dockerfile
-    image: ${IMAGE_NAMESPACE-glideinwms}/frontend-workspace:${IMAGE_LABEL-latest}
+    pull_policy: missing
     volumes:
       - gwms-tokens:/var/lib/gwms-frontend/.condor/tokens.d
       - ${GWMS_PATH-gwms-dev-local}:/opt/gwms
